@@ -1,0 +1,32 @@
+<!-- Build file -->
+
+<!-- Ian Patel -->
+
+<project name = "Chess" default = "run" basedir = ".">
+	<target name = "compile" depends = "clean">
+		<javac srcdir = "."/>
+	</target>
+	
+	<target name = "clean">
+		<delete quiet = "true" includeemptydirs = "true">
+			<fileset dir = "." includes = "**/*.class"/>
+      		<fileset defaultexcludes = "no" dir = "." includes = "**/*~"/>
+			<fileset dir = "META-INF" includes = "**"/>
+		</delete>
+	</target>
+	
+	<target name = "run" depends = "authors, compile">
+		<java classname = "Chess" classpath = "." fork = "yes"/>
+	</target>
+	
+	<target name = "jar">
+		<jar destfile = "project4.jar">
+			<fileset dir = "." includes = "**/*.java"/>
+			<fileset dir = "." includes = "build.xml"/>
+		</jar>
+	</target>
+		
+	<target name = "authors">
+		<echo message = "Author: Ian Patel"/>
+	</target>
+</project>
