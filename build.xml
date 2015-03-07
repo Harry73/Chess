@@ -17,6 +17,7 @@
 	
 	<target name = "run" depends = "authors, compile">
 		<java classname = "Chess" classpath = "." fork = "yes"/>
+		<antcall target = "clean"/>
 	</target>
 	
 	<target name = "jar">
