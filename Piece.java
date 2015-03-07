@@ -21,4 +21,5 @@ public interface Piece
 	public void determineValidMoves(Board board);
 	public boolean hasItMoved();
 	public void move(Board board, Point p);
+	public LinkedList<Point> attackSquares(Board board);
 }

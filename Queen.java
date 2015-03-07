@@ -189,4 +189,11 @@ public class Queen implements Piece
 		hasMoved = true;
 		location = p;
 	}
+
+	//Returns a list of squares that the piece can attack
+	public LinkedList<Point> attackSquares(Board board)
+	{
+		determineValidMoves(board);
+		return validMoves;
+	}
 }
