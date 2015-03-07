@@ -362,10 +362,10 @@ public class Board
 				promotion(current);
 				extraInfo = "promotion";
 			}
+			
+			//Record the last move.
+			history.addNextMove(a, b, taken, extraInfo);
 		}
-		
-		//Record the last move.
-		history.addNextMove(a, b, taken, extraInfo);
 		
 		//Redraw frame.
 		repainting();
@@ -663,7 +663,5 @@ public class Board
 }
 
 //Certain things with hasMoved boolean don't work correctly 
-//Like if you move a rook and undo, you can't castle now
-//or if you move a pawn from is start place and undo it, the pawn can't move forward 2 places anymore
-//or if you promote a pawn and undo it back to its starting position, it can't move forward 2 places anymore
-//but I don't care to fix these, they're minor
+//Namely if you move a rook and undo, you can't castle now
+//but I don't care to fix this, its minor
