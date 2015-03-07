@@ -665,3 +665,5 @@ public class Board
 //Certain things with hasMoved boolean don't work correctly 
 //Namely if you move a rook and undo, you can't castle now
 //but I don't care to fix this, its minor
+//There's also some kind of issues with undoing in general. like pieces get lost somehow
+//are illegal moves getting stores for some reason? maybe I'm just undoing too fast...

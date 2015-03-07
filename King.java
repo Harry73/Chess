@@ -97,8 +97,6 @@ public class King implements Piece
 			}
 		}
 		
-		System.out.println(invalidMoves);
-		
 		//Check top three spaces. King can't move into check
 		if (y+1<=7)
 		{
