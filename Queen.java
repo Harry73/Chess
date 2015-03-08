@@ -196,4 +196,116 @@ public class Queen implements Piece
 		determineValidMoves(board);
 		return validMoves;
 	}
+	
+	//Returns a list of squares that the piece can attack
+	public LinkedList<Point> attackSquares(Piece[][] board)
+	{
+		validMoves.clear();
+		int x = (int)location.getX();
+		int y = (int)location.getY();
+		
+		//Combo of Rook and Bishop methods
+		boolean done = true;
+		while (x+1<=7 && ((board[x+1][y] == null) || (!board[x+1][y].getColor().equals(color))) && done)
+		{
+			validMoves.add(new Point(x+1, y));
+			x++;
+			//check if this square actually had a opposite piece. if it did, end.
+			if (board[x][y] != null)
+				done = false;
+		}
+		done = true;
+		x = (int)location.getX();
+		y = (int)location.getY();
+		
+		while(x-1>=0 && ((board[x-1][y] == null) || (!board[x-1][y].getColor().equals(color))) && done)
+		{
+			validMoves.add(new Point(x-1, y));
+			x--;
+			//check if this square actually had a opposite piece. if it did, end.
+			if (board[x][y] != null)
+				done = false;
+		}
+		done = true;
+		x = (int)location.getX();
+		y = (int)location.getY();
+		
+		
+		while (y+1<=7 && ((board[x][y+1] == null) || (!board[x][y+1].getColor().equals(color))) && done)
+		{
+			validMoves.add(new Point(x, y+1));
+			y++;
+			//check if this square actually had a opposite piece. if it did, end.
+			if (board[x][y] != null)
+				done = false;
+		}
+		done = true;
+		x = (int)location.getX();
+		y = (int)location.getY();
+		
+		while (y-1>=0 && ((board[x][y-1] == null) || (!board[x][y-1].getColor().equals(color))) && done)
+		{
+			validMoves.add(new Point(x, y-1));
+			y--;
+			//check if this square actually had a opposite piece. if it did, end.
+			if (board[x][y] != null)
+				done = false;
+		}
+		x = (int)location.getX();
+		y = (int)location.getY();
+		done = true;
+		
+		
+		
+		while (x+1<=7 && y+1<=7 && ((board[x+1][y+1] == null) || (!board[x+1][y+1].getColor().equals(color))) && done)
+		{
+			validMoves.add(new Point(x+1, y+1));
+			x++;
+			y++;
+			//check if this square actually had a opposite piece. if it did, end.
+			if (board[x][y] != null)
+				done = false;
+		}
+		done = true;
+		x = (int)location.getX();
+		y = (int)location.getY();
+		
+		while(x-1>=0 && y+1<=7 && ((board[x-1][y+1] == null) || (!board[x-1][y+1].getColor().equals(color))) && done)
+		{
+			validMoves.add(new Point(x-1, y+1));
+			x--;
+			y++;
+			//check if this square actually had a opposite piece. if it did, end.
+			if (board[x][y] != null)
+				done = false;
+		}
+		done = true;
+		x = (int)location.getX();
+		y = (int)location.getY();
+				
+		while (x+1<=7 && y-1>=0 && ((board[x+1][y-1] == null) || (!board[x+1][y-1].getColor().equals(color))) && done)
+		{
+			validMoves.add(new Point(x+1, y-1));
+			x++;
+			y--;
+			//check if this square actually had a opposite piece. if it did, end.
+			if (board[x][y] != null)
+				done = false;
+		}
+		done = true;
+		x = (int)location.getX();
+		y = (int)location.getY();
+		
+		while (x-1>=0 && y-1>=0 && ((board[x-1][y-1] == null) || (!board[x-1][y-1].getColor().equals(color))) && done)
+		{
+			validMoves.add(new Point(x-1, y-1));
+			x--;
+			y--;
+			//check if this square actually had a opposite piece. if it did, end.
+			if (board[x][y] != null)
+				done = false;
+		}
+		
+		return validMoves;
+	}
 }

@@ -207,4 +207,48 @@ public class King implements Piece
 			
 		return validMoves;
 	}
+
+	public LinkedList<Point> attackSquares(Piece[][] board)
+	{
+		validMoves.clear();
+		int x = (int)location.getX();
+		int y = (int)location.getY();
+		
+		//Check top three spaces
+		if (y+1<=7)
+		{
+			if ((board[x][y+1] == null) || (!board[x][y+1].getColor().equals(color)))
+				validMoves.add(new Point(x, y+1));
+			
+			if (x-1>=0 && ((board[x-1][y+1] == null) || (!board[x-1][y+1].getColor().equals(color))))
+				validMoves.add(new Point(x-1, y+1));
+			
+			if (x+1<=7 && ((board[x+1][y+1] == null) || (!board[x+1][y+1].getColor().equals(color))))
+				validMoves.add(new Point(x+1, y+1));
+		}
+		
+		//Check bottom three spaces
+		if (y-1>=0)
+		{
+			if ((board[x][y-1] == null) || (!board[x][y-1].getColor().equals(color)))
+				validMoves.add(new Point(x, y-1));
+			
+			if (x-1>=0 && ((board[x-1][y-1] == null) || (!board[x-1][y-1].getColor().equals(color))))
+				validMoves.add(new Point(x-1, y-1));
+			
+			if (x+1<=7 && ((board[x+1][y-1] == null) || (!board[x+1][y-1].getColor().equals(color))))
+				validMoves.add(new Point(x+1, y-1));
+		}
+			
+		//Check left and right spaces
+		if (x+1<=7)
+			if ((board[x+1][y] == null) || (!board[x+1][y].getColor().equals(color)))
+				validMoves.add(new Point(x+1, y));
+			
+		if (x-1>=0)
+			if ((board[x-1][y] == null) || (!board[x-1][y].getColor().equals(color)))
+				validMoves.add(new Point(x-1, y));
+			
+		return validMoves;
+	}
 }

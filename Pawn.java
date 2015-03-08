@@ -153,4 +153,34 @@ public class Pawn implements Piece
 		
 		return validMoves;
 	}
+	
+	//Returns a list of squares that the piece can attack
+	public LinkedList<Point> attackSquares(Piece[][] board)
+	{
+		validMoves.clear();
+		int x = (int)location.getX();
+		int y = (int)location.getY();
+		
+		//This will have to be color dependent I think.
+		if (color.equals("white"))
+		{
+			//Diagonal captures
+			if (x+1<=7 && y+1<=7 && board[x+1][y+1] != null && board[x+1][y+1].getColor().equals("black"))
+				validMoves.add(new Point(x+1, y+1));
+
+			if (x-1>=0 && y+1<=7 && board[x-1][y+1] != null && board[x-1][y+1].getColor().equals("black"))
+				validMoves.add(new Point(x-1, y+1));
+		}
+		else
+		{	
+			//Diagonal captures
+			if (x+1<=7 && y-1<=7 && 	board[x+1][y-1] != null && board[x+1][y-1].getColor().equals("white"))
+				validMoves.add(new Point(x+1, y-1));
+			
+			if (x-1>=0 && y-1<=7 && board[x-1][y-1] != null && board[x-1][y-1].getColor().equals("white"))
+				validMoves.add(new Point(x-1, y-1));
+		}
+		
+		return validMoves;
+	}
 }

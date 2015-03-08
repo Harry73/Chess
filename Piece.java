@@ -22,4 +22,5 @@ public interface Piece
 	public boolean hasItMoved();
 	public void move(Board board, Point p);
 	public LinkedList<Point> attackSquares(Board board);
+	public LinkedList<Point> attackSquares(Piece[][] board);
 }

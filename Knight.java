@@ -126,4 +126,44 @@ public class Knight implements Piece
 		determineValidMoves(board);
 		return validMoves;
 	}
+	
+	public LinkedList<Point> attackSquares(Piece[][] board)
+	{
+		validMoves.clear();
+		int x = (int)location.getX();
+		int y = (int)location.getY();
+		if (x+1<=7 && y+2<=7)
+			if ((board[x+1][y+2] == null) || (!board[x+1][y+2].getColor().equals(color)))
+				validMoves.add(new Point(x+1, y+2));
+			
+		if (x+2<=7 && y+1<=7)
+			if ((board[x+2][y+1] == null) || (!board[x+2][y+1].getColor().equals(color)))
+				validMoves.add(new Point(x+2, y+1));
+		
+		if (x+2<=7 && y-1>=0)
+			if ((board[x+2][y-1] == null) || (!board[x+2][y-1].getColor().equals(color)))
+				validMoves.add(new Point(x+2, y-1));
+		
+		if (x+1<=7 && y-2>=0)
+			if ((board[x+1][y-2] == null) || (!board[x+1][y-2].getColor().equals(color)))
+				validMoves.add(new Point(x+1, y-2));
+		
+		if (x-1>=0 && y-2>=0)
+			if ((board[x-1][y-2] == null) || (!board[x-1][y-2].getColor().equals(color)))
+				validMoves.add(new Point(x-1, y-2));
+			
+		if (x-2>=0 && y-1>=0)
+			if ((board[x-2][y-1] == null) || (!board[x-2][y-1].getColor().equals(color)))
+				validMoves.add(new Point(x-2, y-1));
+			
+		if (x-2>=0 && y+1<=7)
+			if ((board[x-2][y+1] == null) || (!board[x-2][y+1].getColor().equals(color)))
+				validMoves.add(new Point(x-2, y+1));
+			
+		if (x-1>=0 && y+2<=7)
+			if ((board[x-1][y+2] == null) || (!board[x-1][y+2].getColor().equals(color)))
+				validMoves.add(new Point(x-1, y+2));
+		
+		return validMoves;
+	}
 }

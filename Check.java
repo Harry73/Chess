@@ -67,14 +67,44 @@ public class Check
 	
 	public static boolean checkWhite(Board board, Point a, Point b)
 	{
+		Point kingPoint = findKing(board, "white");
+		Piece[][] testBoard = testMove(board, a, b);
 		
+		for (int i = 0; i <= 7; i++)
+		{
+			for (int j = 0; j <= 7; j++)
+			{
+				Piece current = testBoard[i][j];
+				if (current != null && current.getColor().equals("black"))
+				{
+					LinkedList<Point> attacks = current.attackSquares(testBoard);
+					if (attacks.contains(kingPoint))
+						return true;
+				}
+			}
+		}
 		
 		return false;
 	}
 	
 	public static boolean checkBlack(Board board, Point a, Point b)
 	{
+		Point kingPoint = findKing(board, "black");
+		Piece[][] testBoard = testMove(board, a, b);
 		
+		for (int i = 0; i <= 7; i++)
+		{
+			for (int j = 0; j <= 7; j++)
+			{
+				Piece current = testBoard[i][j];
+				if (current != null && current.getColor().equals("white"))
+				{
+					LinkedList<Point> attacks = current.attackSquares(testBoard);
+					if (attacks.contains(kingPoint))
+						return true;
+				}
+			}
+		}
 		
 		return false;
 	}	
