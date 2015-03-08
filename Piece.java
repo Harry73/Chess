@@ -17,7 +17,7 @@ public interface Piece
 	public void setHasMoved(boolean hasMoved);
 	public int drawX();
 	public int drawY();
-	public boolean validMove(Point p);
+	public boolean validMove(Board board, Point p);
 	public void determineValidMoves(Board board);
 	public boolean hasItMoved();
 	public void move(Board board, Point p);

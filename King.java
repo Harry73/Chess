@@ -59,8 +59,8 @@ public class King implements Piece
 		return (7 - (int)location.getY()) * 75;
 	}
 	
-	//Check is the list of valid moves contains the desired move.
-	public boolean validMove(Point p)
+	//Check is the list of valid moves contains the desired move
+	public boolean validMove(Board board, Point p)
 	{
 		if (validMoves.contains(p))
 			return true;

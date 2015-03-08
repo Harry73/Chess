@@ -75,6 +75,7 @@ public class Check
 			for (int j = 0; j <= 7; j++)
 			{
 				Piece current = testBoard[i][j];
+				
 				if (current != null && current.getColor().equals("black"))
 				{
 					LinkedList<Point> attacks = current.attackSquares(testBoard);
@@ -124,15 +125,15 @@ public class Check
 					if (current.getID().equals("king"))
 						testBoard[i][j] = new King("king", current.getColor(), current.getLocation(), current.hasItMoved());
 					else if (current.getID().equals("queen"))
-						testBoard[i][j] = new King("queen", current.getColor(), current.getLocation(), current.hasItMoved());
+						testBoard[i][j] = new Queen("queen", current.getColor(), current.getLocation(), current.hasItMoved());
 					else if (current.getID().equals("rook"))
-						testBoard[i][j] = new King("rook", current.getColor(), current.getLocation(), current.hasItMoved());
+						testBoard[i][j] = new Rook("rook", current.getColor(), current.getLocation(), current.hasItMoved());
 					else if (current.getID().equals("bishop"))
-						testBoard[i][j] = new King("bishop", current.getColor(), current.getLocation(), current.hasItMoved());
+						testBoard[i][j] = new Bishop("bishop", current.getColor(), current.getLocation(), current.hasItMoved());
 					else if (current.getID().equals("knight"))
-						testBoard[i][j] = new King("knight", current.getColor(), current.getLocation(), current.hasItMoved());
+						testBoard[i][j] = new Knight("knight", current.getColor(), current.getLocation(), current.hasItMoved());
 					else if (current.getID().equals("pawn"))
-						testBoard[i][j] = new King("pawn", current.getColor(), current.getLocation(), current.hasItMoved());
+						testBoard[i][j] = new Pawn("pawn", current.getColor(), current.getLocation(), current.hasItMoved());
 				}
 			}
 		}

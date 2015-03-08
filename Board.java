@@ -299,7 +299,7 @@ public class Board
 		
 		//If the move is valid, move the piece, update board.
 		//Opponent's piece gets overwritten if its taken, thus removing it from the board.
-		if (current.validMove(b))
+		if (current.validMove(this, b))
 		{
 			//Update whose turn it is
 			turn = -turn;

@@ -59,13 +59,31 @@ public class Pawn implements Piece
 		return (7 - (int)location.getY()) * 75;
 	}
 	
-	//Check is the list of valid moves contains the desired move.
-	public boolean validMove(Point p)
+	//Check is the list of valid moves contains the desired move and that the king is not in check
+	public boolean validMove(Board board, Point p)
 	{
-		if (validMoves.contains(p))
-			return true;
-		else 
-			return false;
+		if (color.equals("white"))
+		{
+			if (!Check.checkWhite(board, location, p))
+			{	
+				if (validMoves.contains(p))
+					return true;
+				else 
+					return false;
+			}
+		}
+		else
+		{
+			if (!Check.checkBlack(board, location, p))
+			{	
+				if (validMoves.contains(p))
+					return true;
+				else 
+					return false;
+			}
+		}
+		
+		return false;
 	}
 	
 	public void determineValidMoves(Board board)
@@ -174,7 +192,7 @@ public class Pawn implements Piece
 		else
 		{	
 			//Diagonal captures
-			if (x+1<=7 && y-1<=7 && 	board[x+1][y-1] != null && board[x+1][y-1].getColor().equals("white"))
+			if (x+1<=7 && y-1<=7 && board[x+1][y-1] != null && board[x+1][y-1].getColor().equals("white"))
 				validMoves.add(new Point(x+1, y-1));
 			
 			if (x-1>=0 && y-1<=7 && board[x-1][y-1] != null && board[x-1][y-1].getColor().equals("white"))
