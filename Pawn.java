@@ -129,6 +129,12 @@ public class Pawn implements Piece
 		}
 	}
 	
+	public LinkedList<Point> getValidMoves(Board board)
+	{
+		determineValidMoves(board);
+		return validMoves;
+	}
+
 	//Check if the piece has moved yet.
 	public boolean hasItMoved()
 	{

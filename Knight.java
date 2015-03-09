@@ -125,6 +125,12 @@ public class Knight implements Piece
 				validMoves.add(new Point(x-1, y+2));
 	}
 	
+	public LinkedList<Point> getValidMoves(Board board)
+	{
+		determineValidMoves(board);
+		return validMoves;
+	}
+
 	//Check if the piece has moved yet.
 	public boolean hasItMoved()
 	{

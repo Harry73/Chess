@@ -68,6 +68,7 @@ public class Board
 	
 	//For turns
 	int turn = 1; //white's turn.
+	String mode;
 	
 	//Detects mouse actions
 	MouseAdapter mousey = new MouseAdapter()
@@ -117,8 +118,10 @@ public class Board
 	};
 	
 	//Instantiates all the pieces.
-	public Board()
+	public Board(String mode)
 	{
+		this.mode = mode;
+		
 		boardPanel = new BoardPanel();
 		
 		//Set up menu bar
@@ -250,6 +253,9 @@ public class Board
 		blackBishop_pic = Toolkit.getDefaultToolkit().getImage("Images/black_bishop.png");
 		whitePawn_pic = Toolkit.getDefaultToolkit().getImage("Images/white_pawn.png");
 		blackPawn_pic = Toolkit.getDefaultToolkit().getImage("Images/black_pawn.png");
+		
+		if (mode.equals("white ai"))
+			aiMove();
 	}
 	
 	//Determines if a square contains a piece of the same color.
@@ -365,11 +371,86 @@ public class Board
 			
 			//Record the last move.
 			history.addNextMove(a, b, taken, extraInfo);
+			
+			if (mode.equals("white ai") && turn == 1)
+			{
+				aiMove();
+			}
+			else if (mode.equals("black ai") && turn == -1)
+			{
+				aiMove();
+			}
 		}
 		
 		//Redraw frame.
 		repainting();
 	}
+	
+	//Computer movement
+	public void aiMove()
+	{
+		if (mode.equals("white ai"))
+		{
+			//Create a list of white pieces.
+			LinkedList<Piece> options = new LinkedList<Piece>();
+			for (int i = 0; i <= 7; i++)
+			{
+				for (int j = 0; j <= 7; j++)
+				{
+					if (board[i][j] != null && board[i][j].getColor().equals("white"))
+						options.add(board[i][j]);
+				}
+			}
+			
+			boolean done = false;
+			Random rn = new Random();
+			int i = 0;
+			int j = 0;
+			LinkedList<Point> availableMoves = new LinkedList<Point>();
+			while (!done)
+			{
+				i = rn.nextInt(options.size());
+				availableMoves = options.get(i).getValidMoves(this);
+				j = rn.nextInt(availableMoves.size());
+				if (options.get(i).validMove(this, availableMoves.get(j)))
+					done = true;				
+			}
+			
+			move(options.get(i).getLocation(), availableMoves.get(j));
+		}
+		else if (mode.equals("black ai"))
+		{
+			//Create a list of white pieces.
+			LinkedList<Piece> options = new LinkedList<Piece>();
+			for (int i = 0; i <= 7; i++)
+			{
+				for (int j = 0; j <= 7; j++)
+				{
+					if (board[i][j] != null && board[i][j].getColor().equals("black"))
+						options.add(board[i][j]);
+				}
+			}
+			
+			boolean done = false;
+			Random rn = new Random();
+			int i = 0;
+			int j = 0;
+			LinkedList<Point> availableMoves = new LinkedList<Point>();
+			while (!done)
+			{
+				i = rn.nextInt(options.size());
+				availableMoves = options.get(i).getValidMoves(this);
+				if (availableMoves.size() > 0)
+				{	
+					j = rn.nextInt(availableMoves.size());
+					if (options.get(i).validMove(this, availableMoves.get(j)))
+						done = true;				
+				}
+			}
+			
+			move(options.get(i).getLocation(), availableMoves.get(j));
+		}
+	}	
 	
 	//Small method to update the main frame
 	public void repainting()
@@ -390,16 +471,18 @@ public class Board
 	{
 		if (type == "As White")
 		{
-			JOptionPane.showMessageDialog(null, "Sorry, a computer AI is not yet implemented.", "Work in Progress!", JOptionPane.INFORMATION_MESSAGE);
+			frame.dispose();
+			Board chess = new Board("black ai");
 		}
 		else if (type == "As Black")
 		{
-			JOptionPane.showMessageDialog(null, "Sorry, a computer AI is not yet implemented.", "Work in Progress!", JOptionPane.INFORMATION_MESSAGE);
+			frame.dispose();
+			Board chess = new Board("white ai");
 		}
 		else
 		{
 			frame.dispose();
-			Board chess = new Board();
+			Board chess = new Board("2-Player");
 		}
 	}
 	
