@@ -62,10 +62,28 @@ public class King implements Piece
 	//Check is the list of valid moves contains the desired move
 	public boolean validMove(Board board, Point p)
 	{
-		if (validMoves.contains(p))
-			return true;
-		else 
-			return false;
+		if (color.equals("white"))
+		{
+			if (!Check.checkWhite(board, location, p))
+			{	
+				if (validMoves.contains(p))
+					return true;
+				else 
+					return false;
+			}
+		}
+		else
+		{
+			if (!Check.checkBlack(board, location, p))
+			{	
+				if (validMoves.contains(p))
+					return true;
+				else 
+					return false;
+			}
+		}
+		
+		return false;
 	}
 	
 	public void determineValidMoves(Board board)

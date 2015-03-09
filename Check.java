@@ -25,6 +25,22 @@ public class Check
 		return null;
 	}
 	
+	private static Point findKing(Piece[][] board, String color)
+	{
+		for (int i = 0; i <= 7; i++)
+		{
+			for (int j = 0; j <= 7; j++)
+			{
+				Piece current = board[i][j];
+				if (current != null && current.getID().equals("king") && current.getColor().equals(color))
+					return (new Point(i, j));
+			}
+		}
+		
+		return null;
+
+	}
+	
 	public static boolean checkWhite(Board board)
 	{
 		Point kingPoint = findKing(board, "white");
@@ -67,8 +83,8 @@ public class Check
 	
 	public static boolean checkWhite(Board board, Point a, Point b)
 	{
-		Point kingPoint = findKing(board, "white");
 		Piece[][] testBoard = testMove(board, a, b);
+		Point kingPoint = findKing(testBoard, "white");
 		
 		for (int i = 0; i <= 7; i++)
 		{
@@ -90,8 +106,8 @@ public class Check
 	
 	public static boolean checkBlack(Board board, Point a, Point b)
 	{
-		Point kingPoint = findKing(board, "black");
 		Piece[][] testBoard = testMove(board, a, b);
+		Point kingPoint = findKing(testBoard, "black");
 		
 		for (int i = 0; i <= 7; i++)
 		{

@@ -151,6 +151,12 @@ public class Board
 		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, ActionEvent.CTRL_MASK));
 		mainMenu.add(menuItem);
 		
+		menuItem = new JMenuItem("Checkmate?");
+		menuItem.addActionListener(boardPanel);
+		menuItem.setMnemonic(KeyEvent.VK_C);
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK));
+		mainMenu.add(menuItem);
+		
 		menuItem = new JMenuItem("Quit");
 		menuItem.addActionListener(boardPanel);
 		menuItem.setMnemonic(KeyEvent.VK_Q);
@@ -406,14 +412,25 @@ public class Board
 			Random rn = new Random();
 			int i = 0;
 			int j = 0;
+			int counter = 0;
 			LinkedList<Point> availableMoves = new LinkedList<Point>();
 			while (!done)
 			{
+				counter++;
 				i = rn.nextInt(options.size());
 				availableMoves = options.get(i).getValidMoves(this);
-				j = rn.nextInt(availableMoves.size());
-				if (options.get(i).validMove(this, availableMoves.get(j)))
-					done = true;				
+				if (availableMoves.size() > 0)
+				{	
+					j = rn.nextInt(availableMoves.size());
+					if (options.get(i).validMove(this, availableMoves.get(j)))
+						done = true;
+					if (counter == 10000)
+					{
+						repainting();
+						JOptionPane.showMessageDialog(null, "I think that's checkmate!", "Checkmate", JOptionPane.INFORMATION_MESSAGE);
+						quit();
+					}
+				}
 			}
 			
 			move(options.get(i).getLocation(), availableMoves.get(j));
@@ -435,16 +452,24 @@ public class Board
 			Random rn = new Random();
 			int i = 0;
 			int j = 0;
+			int counter = 0;
 			LinkedList<Point> availableMoves = new LinkedList<Point>();
 			while (!done)
 			{
+				counter++;
 				i = rn.nextInt(options.size());
 				availableMoves = options.get(i).getValidMoves(this);
 				if (availableMoves.size() > 0)
 				{	
 					j = rn.nextInt(availableMoves.size());
 					if (options.get(i).validMove(this, availableMoves.get(j)))
-						done = true;				
+						done = true;
+					if (counter == 10000)
+					{
+						repainting();
+						JOptionPane.showMessageDialog(null, "I think that's checkmate!", "Checkmate", JOptionPane.INFORMATION_MESSAGE);
+						quit();
+					}
 				}
 			}
 			
@@ -612,6 +637,79 @@ public class Board
 		}
 	}
 	
+	//Checks if it is checkmate for either side
+	public void checkmate()
+	{
+		String message = "";
+		if (checkmateWhite())
+		{
+			message += "White is in checkmate.";
+		}
+		
+		if (checkmateBlack())
+		{
+			message += "Black is in checkmate.";
+		}
+		
+		if (message.equals(""))
+			JOptionPane.showMessageDialog(null, "Neither side is in checkmate.", "Checkmate?", JOptionPane.INFORMATION_MESSAGE);			
+		else
+			JOptionPane.showMessageDialog(null, message, "Checkmate?", JOptionPane.INFORMATION_MESSAGE);			
+	}
+	
+	private boolean checkmateWhite()
+	{
+		//See if white is in checkmate
+		for (int i = 0; i <= 7; i++)
+		{
+			for (int j = 0; j <= 7; j++)
+			{
+				Piece current = board[i][j];
+				if (current != null && current.getColor().equals("white"))
+				{
+					LinkedList<Point> availableMoves = current.getValidMoves(this);
+					if (availableMoves.size() > 0)
+					{	
+						for (int k = 0; k < availableMoves.size(); k++)
+						{
+							if (!Check.checkWhite(this, current.getLocation(), availableMoves.get(k)))
+								return false;
+						}
+					}
+				}
+			}
+		}
+		
+		return true;
+	}
+	
+	private boolean checkmateBlack()
+	{
+				//See if white is in checkmate
+		for (int i = 0; i <= 7; i++)
+		{
+			for (int j = 0; j <= 7; j++)
+			{
+				Piece current = board[i][j];
+				if (current != null && current.getColor().equals("black"))
+				{
+					LinkedList<Point> availableMoves = current.getValidMoves(this);
+					if (availableMoves.size() > 0)
+					{
+						for (int k = 0; k < availableMoves.size(); k++)
+						{
+							if (!Check.checkBlack(this, current.getLocation(), availableMoves.get(k)))
+								return false;
+						}
+					}
+				}
+			}
+		}
+		
+		return true;
+
+	}
+	
 	//Closes the frame and ends the program
 	public void quit()
 	{
@@ -634,7 +732,9 @@ public class Board
 			if (temp == "As White" || temp == "As Black" || temp == "2-Player")
 				newGame(temp);
 			else if (temp == "Undo")
-				undo();		
+				undo();	
+			else if (temp == "Checkmate?")
+				checkmate();
 			else if (temp == "Quit")
 				quit();
 		}		
