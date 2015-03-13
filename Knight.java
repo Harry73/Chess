@@ -151,6 +151,7 @@ public class Knight implements Piece
 		return validMoves;
 	}
 	
+	//Returns a list of squares that the piece can attack
 	public LinkedList<Point> attackSquares(Piece[][] board)
 	{
 		validMoves.clear();

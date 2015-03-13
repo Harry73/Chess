@@ -88,6 +88,7 @@ public class Interpretor
 		return scan.hasNextLine();
 	}
 	
+	//Returns the last move as an array of points.
 	public Point[] getLastMove()
 	{
 		//0 for from square, 1 for to square, 2 for piece taken, 3 for castling, 4 for promotion
@@ -179,5 +180,32 @@ public class Interpretor
 			newPiece = new Pawn("pawn", color, new Point(x, y), hasMoved);
 	
 		return newPiece;
+	}
+
+	//If checkmate occurs, rewrite the move history to the correct order.
+	public void checkmate(String message)
+	{
+		//Add checkmate to list.
+		moveList = "Checkmate" + "\n" + moveList;
+		
+		String reversedMoveList = "";
+		
+		scan = new Scanner(moveList);
+		while (scan.hasNext())
+		{
+			reversedMoveList = scan.nextLine() + "\n" + reversedMoveList;
+		}		
+		
+		//Write move history to file for viewing.
+		try
+		{
+			out = new PrintWriter(new File("moveLog.txt"));
+			out.print(reversedMoveList);
+			out.close();
+		}
+		catch (IOException e)
+		{
+			System.out.println("The principal is death!");
+		}
 	}
 }

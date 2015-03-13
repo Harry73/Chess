@@ -1,5 +1,5 @@
 /**
- * Interface to define a chess piece
+ * Interface to define the methods of a chess piece
  * 
  * Author: Ian Patel
  */

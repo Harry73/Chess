@@ -10,6 +10,7 @@ import java.awt.*;
 
 public class Check
 {
+	//Determine the location of the king in a given Board object.
 	private static Point findKing(Board board, String color)
 	{
 		for (int i = 0; i <= 7; i++)
@@ -25,6 +26,7 @@ public class Check
 		return null;
 	}
 	
+	//Determine the location of the king in a board as a Piece[][] object.
 	private static Point findKing(Piece[][] board, String color)
 	{
 		for (int i = 0; i <= 7; i++)
@@ -41,6 +43,7 @@ public class Check
 
 	}
 	
+	//Determine, given a Board, if the white king is in check.
 	public static boolean checkWhite(Board board)
 	{
 		Point kingPoint = findKing(board, "white");
@@ -61,6 +64,7 @@ public class Check
 		return false;
 	}
 	
+	//Determine, given a Board, if the black king is in check.
 	public static boolean checkBlack(Board board)
 	{
 		Point kingPoint = findKing(board, "black");
@@ -81,6 +85,7 @@ public class Check
 		return false;
 	}
 	
+	//Determine, given a Board and a certain move, if the white king is in check.
 	public static boolean checkWhite(Board board, Point a, Point b)
 	{
 		Piece[][] testBoard = testMove(board, a, b);
@@ -104,6 +109,7 @@ public class Check
 		return false;
 	}
 	
+	//Determine, given a Board and a certain move, if the black king is in check.
 	public static boolean checkBlack(Board board, Point a, Point b)
 	{
 		Piece[][] testBoard = testMove(board, a, b);
@@ -126,6 +132,7 @@ public class Check
 		return false;
 	}	
 	
+	//Takes a Board, applies a move, and returns a Piece array with the move performed.
 	public static Piece[][] testMove(Board board, Point a, Point b)
 	{
 		Piece[][] testBoard = new Piece[8][8];

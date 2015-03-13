@@ -1,6 +1,6 @@
 /**
  * Main processor class.
- * Handles all drawing and stores the actual state the actual board data.
+ * Handles all drawing and stores the state of the actual board .
  *
  * Author: Ian Patel
  */
@@ -10,6 +10,7 @@ import java.awt.event.*;
 import java.awt.image.*;
 import javax.swing.*;
 import java.util.*;
+import java.io.*;
 
 public class Board
 {
@@ -69,6 +70,10 @@ public class Board
 	//For turns
 	int turn = 1; //white's turn.
 	String mode;
+	boolean checkmate = false;
+	
+	//AI "intelligence" level
+	int level = 1;
 	
 	//Detects mouse actions
 	MouseAdapter mousey = new MouseAdapter()
@@ -76,44 +81,50 @@ public class Board
 		//For selecting and moving a piece
 		public void mousePressed(MouseEvent e)
 		{
-			if (SwingUtilities.isLeftMouseButton(e))
+			if (!checkmate)
 			{
-				int x = (int)Math.floor((e.getX()-8)/75);
-				int y = (int)Math.floor((e.getY()-52)/75);
-				y = 7 - y;
-				if (first == null)
+				if (SwingUtilities.isLeftMouseButton(e))
 				{
-					if (squareOccupiedPeriod(new Point(x, y)))
+					int x = (int)Math.floor((e.getX()-8)/75);
+					int y = (int)Math.floor((e.getY()-52)/75);
+					y = 7 - y;
+					if (first == null)
 					{
-						if ((turn == 1 && board[x][y].getColor().equals("white")) ||
-							(turn == -1 && board[x][y].getColor().equals("black")))
+						if (squareOccupiedPeriod(new Point(x, y)))
 						{
-							first = new Point(x, y);
-							repainting();
+							if ((turn == 1 && board[x][y].getColor().equals("white")) ||
+								(turn == -1 && board[x][y].getColor().equals("black")))
+							{
+								first = new Point(x, y);
+								repainting();
+							}
+							else
+								first = null;
 						}
 						else
 							first = null;
 					}
 					else
-						first = null;
+					{
+						second = new Point(x, y);
+						move(first, second);
+					}		
 				}
-				else
-				{
-					second = new Point(x, y);
-					move(first, second);
-				}		
-			}
+			}		
 		}
 		
 		//For highlighting what square the mouse is in
 		public void mouseMoved(MouseEvent e)
 		{
-			int x = (int)Math.floor((e.getX()-8)/75);
-			int y = (int)Math.floor((e.getY()-52)/75);
-			y = 7 - y;
-			
-			currentSquare = new Point(x, y);
-			repainting();
+			if (!checkmate)
+			{
+				int x = (int)Math.floor((e.getX()-8)/75);
+				int y = (int)Math.floor((e.getY()-52)/75);
+				y = 7 - y;
+				
+				currentSquare = new Point(x, y);
+				repainting();
+			}
 		}
 	};
 	
@@ -126,13 +137,17 @@ public class Board
 		
 		//Set up menu bar
 		menuBar = new JMenuBar();
+		
+		//Options menu
 		mainMenu = new JMenu("Options");
 		mainMenu.setMnemonic(KeyEvent.VK_O);
 		menuBar.add(mainMenu);
 		
+		//New Game menu
 		newGameMenu = new JMenu("New Game");
 		newGameMenu.setMnemonic(KeyEvent.VK_N);
 		
+		//New game items
 		menuItem = new JMenuItem("As White");
 		menuItem.addActionListener(boardPanel);
 		newGameMenu.add(menuItem);
@@ -145,22 +160,40 @@ public class Board
 		newGameMenu.add(menuItem);
 		mainMenu.add(newGameMenu);
 		
+		//Undo item
 		menuItem = new JMenuItem("Undo");
 		menuItem.addActionListener(boardPanel);
 		menuItem.setMnemonic(KeyEvent.VK_U);
 		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, ActionEvent.CTRL_MASK));
 		mainMenu.add(menuItem);
 		
-		menuItem = new JMenuItem("Checkmate?");
+		//Move History
+		menuItem = new JMenuItem("Move History");
 		menuItem.addActionListener(boardPanel);
-		menuItem.setMnemonic(KeyEvent.VK_C);
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK));
+		menuItem.setMnemonic(KeyEvent.VK_H);
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H, ActionEvent.CTRL_MASK));
 		mainMenu.add(menuItem);
 		
+		//Quit item
 		menuItem = new JMenuItem("Quit");
 		menuItem.addActionListener(boardPanel);
 		menuItem.setMnemonic(KeyEvent.VK_Q);
 		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, ActionEvent.CTRL_MASK));
+		mainMenu.add(menuItem);
+		
+		//AI level menu
+		mainMenu = new JMenu("AI Level");
+		mainMenu.setMnemonic(KeyEvent.VK_L);
+		menuBar.add(mainMenu);
+		
+		menuItem = new JMenuItem("Level 1");
+		menuItem.addActionListener(boardPanel);
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_1, ActionEvent.CTRL_MASK));
+		mainMenu.add(menuItem);
+
+		menuItem = new JMenuItem("Level 2");
+		menuItem.addActionListener(boardPanel);
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_2, ActionEvent.CTRL_MASK));
 		mainMenu.add(menuItem);
 		
 		//Create main frame
@@ -261,7 +294,7 @@ public class Board
 		blackPawn_pic = Toolkit.getDefaultToolkit().getImage("Images/black_pawn.png");
 		
 		if (mode.equals("white ai"))
-			aiMove();
+			AI.move("white", level, this);
 	}
 	
 	//Determines if a square contains a piece of the same color.
@@ -378,104 +411,27 @@ public class Board
 			//Record the last move.
 			history.addNextMove(a, b, taken, extraInfo);
 			
-			if (mode.equals("white ai") && turn == 1)
-			{
-				aiMove();
-			}
-			else if (mode.equals("black ai") && turn == -1)
-			{
-				aiMove();
+			//Redraw and check for checkmate.
+			repainting();
+			checkmate();
+	
+			//Run computer's turn
+			if (!checkmate)
+			{	
+				if (mode.equals("white ai") && turn == 1)
+				{
+					AI.move("white", level, this);
+				}
+				else if (mode.equals("black ai") && turn == -1)
+				{
+					AI.move("black", level, this);
+				}
 			}
 		}
 		
 		//Redraw frame.
 		repainting();
 	}
-	
-	//Computer movement
-	public void aiMove()
-	{
-		if (mode.equals("white ai"))
-		{
-			//Create a list of white pieces.
-			LinkedList<Piece> options = new LinkedList<Piece>();
-			for (int i = 0; i <= 7; i++)
-			{
-				for (int j = 0; j <= 7; j++)
-				{
-					if (board[i][j] != null && board[i][j].getColor().equals("white"))
-						options.add(board[i][j]);
-				}
-			}
-			
-			boolean done = false;
-			Random rn = new Random();
-			int i = 0;
-			int j = 0;
-			int counter = 0;
-			LinkedList<Point> availableMoves = new LinkedList<Point>();
-			while (!done)
-			{
-				counter++;
-				i = rn.nextInt(options.size());
-				availableMoves = options.get(i).getValidMoves(this);
-				if (availableMoves.size() > 0)
-				{	
-					j = rn.nextInt(availableMoves.size());
-					if (options.get(i).validMove(this, availableMoves.get(j)))
-						done = true;
-					if (counter == 10000)
-					{
-						repainting();
-						JOptionPane.showMessageDialog(null, "I think that's checkmate!", "Checkmate", JOptionPane.INFORMATION_MESSAGE);
-						quit();
-					}
-				}
-			}
-			
-			move(options.get(i).getLocation(), availableMoves.get(j));
-		}
-		else if (mode.equals("black ai"))
-		{
-			//Create a list of white pieces.
-			LinkedList<Piece> options = new LinkedList<Piece>();
-			for (int i = 0; i <= 7; i++)
-			{
-				for (int j = 0; j <= 7; j++)
-				{
-					if (board[i][j] != null && board[i][j].getColor().equals("black"))
-						options.add(board[i][j]);
-				}
-			}
-			
-			boolean done = false;
-			Random rn = new Random();
-			int i = 0;
-			int j = 0;
-			int counter = 0;
-			LinkedList<Point> availableMoves = new LinkedList<Point>();
-			while (!done)
-			{
-				counter++;
-				i = rn.nextInt(options.size());
-				availableMoves = options.get(i).getValidMoves(this);
-				if (availableMoves.size() > 0)
-				{	
-					j = rn.nextInt(availableMoves.size());
-					if (options.get(i).validMove(this, availableMoves.get(j)))
-						done = true;
-					if (counter == 10000)
-					{
-						repainting();
-						JOptionPane.showMessageDialog(null, "I think that's checkmate!", "Checkmate", JOptionPane.INFORMATION_MESSAGE);
-						quit();
-					}
-				}
-			}
-			
-			move(options.get(i).getLocation(), availableMoves.get(j));
-		}
-	}	
 	
 	//Small method to update the main frame
 	public void repainting()
@@ -514,7 +470,7 @@ public class Board
 	//Undoes the last move
 	public void undo()
 	{
-		if (history.hasLastMove())
+		if (history.hasLastMove() && !checkmate)
 		{
 			//Update whose turn it is
 			turn = -turn;
@@ -641,22 +597,26 @@ public class Board
 	public void checkmate()
 	{
 		String message = "";
-		if (checkmateWhite())
+		if (turn == 1 && checkmateWhite())
 		{
-			message += "White is in checkmate.";
+			message = "Checkmate! Black wins!.";
+			checkmate = true;
 		}
 		
-		if (checkmateBlack())
+		if (turn == -1 && checkmateBlack())
 		{
-			message += "Black is in checkmate.";
+			message = "Checkmate! White wins!";
+			checkmate = true;
 		}
 		
-		if (message.equals(""))
-			JOptionPane.showMessageDialog(null, "Neither side is in checkmate.", "Checkmate?", JOptionPane.INFORMATION_MESSAGE);			
-		else
-			JOptionPane.showMessageDialog(null, message, "Checkmate?", JOptionPane.INFORMATION_MESSAGE);			
+		if (!message.equals(""))
+		{
+			JOptionPane.showMessageDialog(null, message, "Checkmate", JOptionPane.INFORMATION_MESSAGE);
+			history.checkmate(message);
+		}
 	}
 	
+	//Check if white is in checkmate
 	private boolean checkmateWhite()
 	{
 		//See if white is in checkmate
@@ -683,6 +643,7 @@ public class Board
 		return true;
 	}
 	
+	//Check if black is in checkmate
 	private boolean checkmateBlack()
 	{
 				//See if white is in checkmate
@@ -733,10 +694,24 @@ public class Board
 				newGame(temp);
 			else if (temp == "Undo")
 				undo();	
-			else if (temp == "Checkmate?")
-				checkmate();
+			else if (temp == "Move History")
+			{
+				try 
+				{
+					Desktop.getDesktop().open(new File("moveLog.txt"));
+				}
+				catch (IOException exception)
+				{
+					System.out.println("The limit does not exist!");
+				}
+			}
+				
 			else if (temp == "Quit")
 				quit();
+			else if (temp == "Level 1")
+				level = 1;
+			else if (temp == "Level 2")
+				level = 2;
 		}		
 		
 		public void paintComponent(Graphics g)
@@ -851,5 +826,5 @@ public class Board
  * But I don't care to fix this, its minor.
  * 
  * There's also some kind of issues with undoing in general. Like pieces sometimes get lost somehow...
- * Are some illegal moves getting stores for some reason? Maybe I'm just undoing too fast...
+ * ^ this may have been fixed, I can't remember.
  */

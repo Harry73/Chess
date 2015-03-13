@@ -1,12 +1,13 @@
-<!-- Build file -->
-
-<!-- Ian Patel -->
+<!-- Author: Ian Patel -->
 
 <project name = "Chess" default = "run" basedir = ".">
+	
+	<!-- Compile all .java files -->
 	<target name = "compile" depends = "clean">
 		<javac srcdir = "."/>
 	</target>
 	
+	<!-- Delete all .class files and other folders/files -->
 	<target name = "clean">
 		<delete quiet = "true" includeemptydirs = "true">
 			<fileset dir = "." includes = "**/*.class"/>
@@ -15,11 +16,13 @@
 		</delete>
 	</target>
 	
+	<!-- Run the main class -->
 	<target name = "run" depends = "authors, compile">
 		<java classname = "Chess" classpath = "." fork = "yes"/>
 		<antcall target = "clean"/>
 	</target>
 	
+	<!-- Compress all .java files and build.xml into a jar -->
 	<target name = "jar">
 		<jar destfile = "project4.jar">
 			<fileset dir = "." includes = "**/*.java"/>
@@ -27,7 +30,9 @@
 		</jar>
 	</target>
 		
+	<!-- Display author name -->
 	<target name = "authors">
 		<echo message = "Author: Ian Patel"/>
 	</target>
+	
 </project>
