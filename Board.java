@@ -150,9 +150,11 @@ public class Board
 		//New game items
 		menuItem = new JMenuItem("As White");
 		menuItem.addActionListener(boardPanel);
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, ActionEvent.CTRL_MASK));
 		newGameMenu.add(menuItem);
 		menuItem = new JMenuItem("As Black");
 		menuItem.addActionListener(boardPanel);
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, ActionEvent.CTRL_MASK));
 		newGameMenu.add(menuItem);
 		menuItem = new JMenuItem("2-Player");
 		menuItem.addActionListener(boardPanel);
@@ -170,7 +172,7 @@ public class Board
 		//Move History
 		menuItem = new JMenuItem("Move History");
 		menuItem.addActionListener(boardPanel);
-		menuItem.setMnemonic(KeyEvent.VK_H);
+		menuItem.setMnemonic(KeyEvent.VK_M);
 		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H, ActionEvent.CTRL_MASK));
 		mainMenu.add(menuItem);
 		
