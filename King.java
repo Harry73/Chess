@@ -188,7 +188,7 @@ public class King implements Piece
 		location = p;
 	}
 
-	//Determine the squares that the king piece can attack
+	//Returns a list of squares that the piece can attack
 	public LinkedList<Point> attackSquares(Board board)
 	{
 		validMoves.clear();
@@ -233,7 +233,7 @@ public class King implements Piece
 		return validMoves;
 	}
 
-	//Determine the squares that the king piece can attack
+	//Returns a list of squares that the piece can attack
 	public LinkedList<Point> attackSquares(Piece[][] board)
 	{
 		validMoves.clear();

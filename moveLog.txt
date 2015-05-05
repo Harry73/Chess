@@ -1,0 +1,48 @@
+E2 E3		
+D7 D6		
+G1 F3		
+C7 C5		
+F3 G5		
+G8 H6		
+G5 F7	pawn black F7 false	
+H6 F7	knight white F7 true	
+F1 C4		
+F7 G5		
+D1 H5		
+E8 D7		
+H5 G4		
+D7 C7		
+G4 G5	knight black G5 true	
+B7 B6		
+E1 G1		0-0w 
+D8 D7		
+B2 B3		
+B8 A6		
+A2 A4		
+D7 A4	pawn white A4 true	
+B3 A4	queen black A4 true	
+C8 E6		
+C4 E6	bishop black E6 true	
+A8 B8		
+C1 B2		
+D6 D5		
+B2 G7	pawn black G7 false	
+F8 G7	bishop white G7 true	
+G5 G7	bishop black G7 true	
+H8 E8		
+G7 H7	pawn black H7 false	
+C5 C4		
+B1 C3		
+B8 A8		
+C3 D5	pawn black D5 true	
+C7 B7		
+D5 E7	pawn black E7 false	
+E8 E7	knight white E7 true	
+H7 E7	rook black E7 true	
+B7 C6		
+E7 D7		
+C6 C5		
+D7 D5		
+C5 B4		
+F1 B1		
+Checkmate

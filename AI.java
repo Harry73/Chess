@@ -10,12 +10,12 @@ import java.util.*;
 
 public class AI
 {
-	public static void move(String mode, int level, Board board)
+	public static void move(String color, int level, Board board)
 	{
 		LinkedList<Piece> pieces = new LinkedList<Piece>();
 		LinkedList<Move> availableMoves = new LinkedList<Move>();
 		
-		if (mode.equals("white"))
+		if (color.equals("white"))
 		{
 			for (int i = 0; i <= 7; i++)
 			{
@@ -37,7 +37,7 @@ public class AI
 				}
 			}
 		}
-		else if (mode.equals("black"))
+		else if (color.equals("black"))
 		{
 			for (int i = 0; i <= 7; i++)
 			{
@@ -59,21 +59,26 @@ public class AI
 				}
 			}
 		}
+		
+		//Shuffle the list for purposes we will not speak of (level2 needs it)
+		Collections.shuffle(availableMoves);
 
 		Move selectedMove = null;
 		
 		//Call appropriate AI method.
 		if (level == 1)
-			selectedMove = level1(availableMoves, board);
+			selectedMove = level1(availableMoves, board, color);
 		else if (level == 2)
-			selectedMove = level2(availableMoves, board);
+			selectedMove = level2(availableMoves, board, color);
+		else if (level == 3)
+			selectedMove = level3(availableMoves, board, color);
 		
 		//Perform the chosen move.
 		board.move(selectedMove.from(), selectedMove.to());
 	}
 	
 	//Picks a random move from the list of available moves.
-	public static Move level1(LinkedList<Move> availableMoves, Board board)
+	public static Move level1(LinkedList<Move> availableMoves, Board board, String color)
 	{
 		Random rn = new Random();
 		int i = 0;
@@ -91,12 +96,55 @@ public class AI
 	}
 	
 	//Evaluate the resulting position of each move and pick the best. 
-	public static Move level2(LinkedList<Move> availableMoves, Board board)
+	public static Move level2(LinkedList<Move> availableMoves, Board board, String color)
 	{
-		return level1(availableMoves, board);
+		LinkedList<Integer> boardScores = new LinkedList<Integer>();
+				
+		//Iterate through all possible moves, create a testBoard for each, and evaluate the testBoard, save score in LinkedList
+		for (int i = 0; i < availableMoves.size(); i++)
+		{
+			Piece[][] testBoard = testMove(board, availableMoves.get(i).from(), availableMoves.get(i).to());
+			boardScores.add(evaluate(testBoard, color));
+		}
+		
+		boolean done = false;
+		int value = 0;
+		
+		//Force this process to repeat until a valid move is selected
+		while (!done)
+		{
+			//Find maximum value in the boardScores LinkedList
+			int max = -500;
+			value = 0;
+			for (int i = 0; i < boardScores.size(); i++)
+			{
+				if (boardScores.get(i) > max)
+				{
+					max = boardScores.get(i);
+					value = i;
+				}
+			}
+			
+			Move chosen = availableMoves.get(value);
+			if (board.getPiece(chosen.from()).validMove(board, chosen.to()))
+				done = true;
+			else
+			{
+				availableMoves.remove(value);
+				boardScores.remove(value);
+			}
+		}
+		
+		return availableMoves.get(value);
+	}
+
+	//Do what level2 does but look 3 moves in instead of 1.
+	public static Move level3(LinkedList<Move> availableMoves, Board board, String color)
+	{
+		
 	}
 	
-	//Recreates the board and applies a test move, returning the board.
+	//Recreates the Board and applies a test move, returning the board as Piece array.
 	public static Piece[][] testMove(Board board, Point a, Point b)
 	{
 		Piece[][] testBoard = new Piece[8][8];
@@ -132,10 +180,89 @@ public class AI
 		
 		return testBoard;
 	}
-
-	//Returns a numeric value representing the value of the current board
-	public static int evaluate(Piece[][] board)
+	
+	//Recreates the Piece array and applies a test move, returning the new Piece array.
+	public static Piece[][] testMove(Piece[][] board, Point a, Point b)
 	{
-		return 0;
+		Piece[][] testBoard = new Piece[8][8];
+		
+		//Duplicate the board as testBoard
+		for (int i = 0; i <= 7; i++)
+		{
+			for (int j = 0; j <= 7; j++)
+			{
+				Piece current = board[i][j];
+				if (current != null)
+				{
+					if (current.getID().equals("king"))
+						testBoard[i][j] = new King("king", current.getColor(), current.getLocation(), current.hasItMoved());
+					else if (current.getID().equals("queen"))
+						testBoard[i][j] = new King("queen", current.getColor(), current.getLocation(), current.hasItMoved());
+					else if (current.getID().equals("rook"))
+						testBoard[i][j] = new King("rook", current.getColor(), current.getLocation(), current.hasItMoved());
+					else if (current.getID().equals("bishop"))
+						testBoard[i][j] = new King("bishop", current.getColor(), current.getLocation(), current.hasItMoved());
+					else if (current.getID().equals("knight"))
+						testBoard[i][j] = new King("knight", current.getColor(), current.getLocation(), current.hasItMoved());
+					else if (current.getID().equals("pawn"))
+						testBoard[i][j] = new King("pawn", current.getColor(), current.getLocation(), current.hasItMoved());
+				}
+			}
+		}
+		
+		//This is not good enough. Need to account for castling/promotion
+		testBoard[(int)a.getX()][(int)a.getY()].setLocation(b);
+		testBoard[(int)b.getX()][(int)b.getY()] = testBoard[(int)a.getX()][(int)a.getY()];
+		testBoard[(int)a.getX()][(int)a.getY()] = null;
+		
+		return testBoard;
+	}
+
+	//Returns a numeric value representing the value of the board passed in
+	public static int evaluate(Piece[][] board, String color)
+	{
+		int score = 0;
+		for (int i = 0; i <= 7; i++)
+		{
+			for (int j = 0; j <= 7; j++)
+			{
+				if (board[i][j] != null)
+				{
+					if (board[i][j].getColor().equals(color))
+					{
+						if (board[i][j].getID() == "king")
+							score += 200;
+						else if (board[i][j].getID() == "queen")
+							score += 9;
+						else if (board[i][j].getID() == "rook")
+							score += 5;
+						else if (board[i][j].getID() == "bishop")
+							score += 3;
+						else if (board[i][j].getID() == "knight")
+							score += 3;
+						else if (board[i][j].getID() == "pawn")
+							score += 1;
+					}
+					else
+					{
+						if (board[i][j].getID() == "king")
+							score -= 200;
+						else if (board[i][j].getID() == "queen")
+							score -= 9;
+						else if (board[i][j].getID() == "rook")
+							score -= 5;
+						else if (board[i][j].getID() == "bishop")
+							score -= 3;
+						else if (board[i][j].getID() == "knight")
+							score -= 3;
+						else if (board[i][j].getID() == "pawn")
+							score -= 1;
+					}
+				}
+			}
+		}
+		
+		//System.out.println(score);
+		return score;
 	}
 }

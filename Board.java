@@ -198,6 +198,11 @@ public class Board
 		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_2, ActionEvent.CTRL_MASK));
 		mainMenu.add(menuItem);
 		
+		menuItem = new JMenuItem("Level 3");
+		menuItem.addActionListener(boardPanel);
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_3, ActionEvent.CTRL_MASK));
+		mainMenu.add(menuItem);
+		
 		//Create main frame
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.add(boardPanel);
@@ -707,14 +712,16 @@ public class Board
 					System.out.println("The limit does not exist!");
 				}
 			}
-				
+			
 			else if (temp == "Quit")
 				quit();
 			else if (temp == "Level 1")
 				level = 1;
 			else if (temp == "Level 2")
 				level = 2;
-		}		
+			else if (temp == "Level 3")
+				level = 3;
+		}
 		
 		public void paintComponent(Graphics g)
 		{

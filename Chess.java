@@ -3,7 +3,7 @@
  * 
  * Author: Ian Patel
  */
- 
+
 import java.util.*;
 
 public class Chess

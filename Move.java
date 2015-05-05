@@ -41,4 +41,9 @@ public class Move
 	{
 		return from;
 	}
+	
+	public String toString()
+	{
+		return from + " -> " + to;
+	}
 }
