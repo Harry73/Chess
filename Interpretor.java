@@ -1,6 +1,5 @@
 /**
- * Class to take information about a move and store it, thus
- * creating a move history.
+ * Class to take information about a move and store it, thus creating a move history.
  * Mainly used for undoing a move, but the history is also written to 
  * the file "movelog.txt" if the user wishes to view it.
  * 

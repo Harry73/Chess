@@ -58,6 +58,86 @@ public class Pawn implements Piece
 	{
 		return (7 - (int)location.getY()) * 75;
 	}
+
+	
+	
+	//Check is the list of valid moves contains the desired move and that the king is not in check
+	public boolean validMove(TestBoard board, Point p)
+	{
+		if (color.equals("white"))
+		{
+			if (!Check.checkWhite(board, location, p))
+			{	
+				if (validMoves.contains(p))
+					return true;
+				else 
+					return false;
+			}
+		}
+		else
+		{
+			if (!Check.checkBlack(board, location, p))
+			{	
+				if (validMoves.contains(p))
+					return true;
+				else 
+					return false;
+			}
+		}
+		
+		return false;
+	}
+	
+	public void determineValidMoves(TestBoard board)
+	{
+		validMoves.clear();
+		int x = (int)location.getX();
+		int y = (int)location.getY();
+		
+		//This will have to be color dependent I think.
+		if (color == "white")
+		{
+			//Add special case if the pawn hasn't moved.
+			if (!hasMoved && !board.squareOccupiedPeriod(new Point(x, y+1)) && !board.squareOccupiedPeriod(new Point(x, y+2)))
+				validMoves.add(new Point(x, y+2));
+
+			//Move forward
+			if (y+1<=7 && !board.squareOccupiedPeriod(new Point(x, y+1)))
+				validMoves.add(new Point(x, y+1));
+
+			//Diagonal captures
+			if (x+1<=7 && y+1<=7 && !board.squareOccupied(new Point(x+1, y+1), "white") && board.squareOccupiedPeriod(new Point(x+1, y+1)))
+				validMoves.add(new Point(x+1, y+1));
+
+			if (x-1>=0 && y+1<=7 && !board.squareOccupied(new Point(x-1, y+1), "white") && board.squareOccupiedPeriod(new Point(x-1, y+1)))
+				validMoves.add(new Point(x-1, y+1));
+		}
+		else
+		{
+			//Add special case if the pawn hasn't moved.
+			if (!hasMoved && !board.squareOccupiedPeriod(new Point(x, y-1)) && !board.squareOccupiedPeriod(new Point(x, y-2)))
+				validMoves.add(new Point(x, y-2));
+			
+			//Move forward
+			if (y-1<=7 && !board.squareOccupiedPeriod(new Point(x, y-1)))
+				validMoves.add(new Point(x, y-1));
+			
+			//Diagonal captures
+			if (x+1<=7 && y-1<=7 && !board.squareOccupied(new Point(x+1, y-1), "black") && board.squareOccupiedPeriod(new Point(x+1, y-1)))
+				validMoves.add(new Point(x+1, y-1));
+			
+			if (x-1>=0 && y-1<=7 && !board.squareOccupied(new Point(x-1, y-1), "black") && board.squareOccupiedPeriod(new Point(x-1, y-1)))
+				validMoves.add(new Point(x-1, y-1));
+		}
+	}
+	
+	public LinkedList<Point> getValidMoves(TestBoard board)
+	{
+		determineValidMoves(board);
+		return validMoves;
+	}
+
+
 	
 	//Check is the list of valid moves contains the desired move and that the king is not in check
 	public boolean validMove(Board board, Point p)
@@ -177,6 +257,45 @@ public class Pawn implements Piece
 		
 		return validMoves;
 	}
+	
+		
+	//Moves a piece. Assumes the move is valid.
+	public void move(TestBoard board, Point p)
+	{
+		hasMoved = true;
+		location = p;
+	}
+	
+	//Returns a list of squares that the piece can attack
+	public LinkedList<Point> attackSquares(TestBoard board)
+	{
+		validMoves.clear();
+		int x = (int)location.getX();
+		int y = (int)location.getY();
+		
+		//This will have to be color dependent I think.
+		if (color.equals("white"))
+		{
+			//Diagonal captures
+			if (x+1<=7 && y+1<=7 && !board.squareOccupied(new Point(x+1, y+1), "white") && board.squareOccupiedPeriod(new Point(x+1, y+1)))
+				validMoves.add(new Point(x+1, y+1));
+
+			if (x-1>=0 && y+1<=7 && !board.squareOccupied(new Point(x-1, y+1), "white") && board.squareOccupiedPeriod(new Point(x-1, y+1)))
+				validMoves.add(new Point(x-1, y+1));
+		}
+		else
+		{	
+			//Diagonal captures
+			if (x+1<=7 && y-1<=7 && !board.squareOccupied(new Point(x+1, y-1), "black") && board.squareOccupiedPeriod(new Point(x+1, y-1)))
+				validMoves.add(new Point(x+1, y-1));
+			
+			if (x-1>=0 && y-1<=7 && !board.squareOccupied(new Point(x-1, y-1), "black") && board.squareOccupiedPeriod(new Point(x-1, y-1)))
+				validMoves.add(new Point(x-1, y-1));
+		}
+		
+		return validMoves;
+	}
+	
 	
 	//Returns a list of squares that the piece can attack
 	public LinkedList<Point> attackSquares(Piece[][] board)

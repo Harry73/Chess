@@ -60,6 +60,78 @@ public class Knight implements Piece
 	}
 	
 	//Check is the list of valid moves contains the desired move and that the king is not in check
+	public boolean validMove(TestBoard board, Point p)
+	{
+		if (color.equals("white"))
+		{
+			if (!Check.checkWhite(board, location, p))
+			{	
+				if (validMoves.contains(p))
+					return true;
+				else 
+					return false;
+			}
+		}
+		else
+		{
+			if (!Check.checkBlack(board, location, p))
+			{
+				if (validMoves.contains(p))
+					return true;
+				else 
+					return false;
+			}
+		}
+		
+		return false;
+	}
+	
+	//Creates a list of squares the piece can move to.
+	public void determineValidMoves(TestBoard board)
+	{
+		validMoves.clear();
+		int x = (int)location.getX();
+		int y = (int)location.getY();
+		if (x+1<=7 && y+2<=7)
+			if (!board.squareOccupied(new Point(x+1, y+2), color))
+				validMoves.add(new Point(x+1, y+2));
+			
+		if (x+2<=7 && y+1<=7)
+			if (!board.squareOccupied(new Point(x+2, y+1), color))
+				validMoves.add(new Point(x+2, y+1));
+		
+		if (x+2<=7 && y-1>=0)
+			if (!board.squareOccupied(new Point(x+2, y-1), color))
+				validMoves.add(new Point(x+2, y-1));
+		
+		if (x+1<=7 && y-2>=0)
+			if (!board.squareOccupied(new Point(x+1, y-2), color))
+				validMoves.add(new Point(x+1, y-2));
+		
+		if (x-1>=0 && y-2>=0)
+			if (!board.squareOccupied(new Point(x-1, y-2), color))
+				validMoves.add(new Point(x-1, y-2));
+			
+		if (x-2>=0 && y-1>=0)
+			if (!board.squareOccupied(new Point(x-2, y-1), color))
+				validMoves.add(new Point(x-2, y-1));
+			
+		if (x-2>=0 && y+1<=7)
+			if (!board.squareOccupied(new Point(x-2, y+1), color))
+				validMoves.add(new Point(x-2, y+1));
+			
+		if (x-1>=0 && y+2<=7)
+			if (!board.squareOccupied(new Point(x-1, y+2), color))
+				validMoves.add(new Point(x-1, y+2));
+	}
+	
+	public LinkedList<Point> getValidMoves(TestBoard board)
+	{
+		determineValidMoves(board);
+		return validMoves;
+	}
+
+	//Check is the list of valid moves contains the desired move and that the king is not in check
 	public boolean validMove(Board board, Point p)
 	{
 		if (color.equals("white"))
@@ -146,6 +218,20 @@ public class Knight implements Piece
 	
 	//Returns a list of squares that the piece can attack
 	public LinkedList<Point> attackSquares(Board board)
+	{
+		determineValidMoves(board);
+		return validMoves;
+	}
+	
+	//Moves a piece. Assumes the move is valid.
+	public void move(TestBoard board, Point p)
+	{
+		hasMoved = true;
+		location = p;
+	}
+	
+	//Returns a list of squares that the piece can attack
+	public LinkedList<Point> attackSquares(TestBoard board)
 	{
 		determineValidMoves(board);
 		return validMoves;

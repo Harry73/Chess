@@ -60,6 +60,123 @@ public class King implements Piece
 	}
 	
 	//Check is the list of valid moves contains the desired move
+	public boolean validMove(TestBoard board, Point p)
+	{
+		if (color.equals("white"))
+		{
+			if (!Check.checkWhite(board, location, p))
+			{	
+				if (validMoves.contains(p))
+					return true;
+				else 
+					return false;
+			}
+		}
+		else
+		{
+			if (!Check.checkBlack(board, location, p))
+			{	
+				if (validMoves.contains(p))
+					return true;
+				else 
+					return false;
+			}
+		}
+		
+		return false;
+	}
+	
+	public void determineValidMoves(TestBoard board)
+	{
+		validMoves.clear();
+		int x = (int)location.getX();
+		int y = (int)location.getY();
+		
+		//Create a list of invalid positions (due to checking)
+		LinkedList<Point> invalidMoves = new LinkedList<Point>();
+		
+		//Search the whole board
+		for (int i = 0; i <= 7; i++)
+		{
+			for (int j = 0; j <= 7; j++)
+			{
+				//Save the piece in the current square
+				Piece current = board.getPiece(new Point(i, j ));
+				
+				//if there is a piece here...
+				if (current != null)
+				{
+					//if the piece is of a different color...
+					if (!current.getColor().equals(color))
+					{
+						invalidMoves.addAll(current.attackSquares(board));
+					}
+				}
+			}
+		}
+		
+		//Check top three spaces. King can't move into check
+		if (y+1<=7)
+		{
+			if (!board.squareOccupied(new Point(x, y+1), color) && !invalidMoves.contains(new Point(x, y+1)))
+				validMoves.add(new Point(x, y+1));
+			
+			if (x-1>=0 && !board.squareOccupied(new Point(x-1, y+1), color) && !invalidMoves.contains(new Point(x-1, y+1)))
+				validMoves.add(new Point(x-1, y+1));
+			
+			if (x+1<=7 && !board.squareOccupied(new Point(x+1, y+1), color) && !invalidMoves.contains(new Point(x+1, y+1)))
+				validMoves.add(new Point(x+1, y+1));
+		}
+		
+		//Check bottom three spaces. King can't move into check
+		if (y-1>=0)
+		{
+			if (!board.squareOccupied(new Point(x, y-1), color) && !invalidMoves.contains(new Point(x, y-1)))
+				validMoves.add(new Point(x, y-1));
+			
+			if (x-1>=0 && !board.squareOccupied(new Point(x-1, y-1), color) && !invalidMoves.contains(new Point(x-1, y-1)))
+				validMoves.add(new Point(x-1, y-1));
+			
+			if (x+1<=7 && !board.squareOccupied(new Point(x+1, y-1), color) && !invalidMoves.contains(new Point(x+1, y-1)))
+				validMoves.add(new Point(x+1, y-1));
+		}
+			
+		//Check left and right spaces. King can't move into check
+		if (x+1<=7)
+			if (!board.squareOccupied(new Point(x+1, y), color) && !invalidMoves.contains(new Point(x+1, y)))
+				validMoves.add(new Point(x+1, y));
+			
+		if (x-1>=0)
+			if (!board.squareOccupied(new Point(x-1, y), color) && !invalidMoves.contains(new Point(x-1, y)))
+				validMoves.add(new Point(x-1, y));
+			
+		//Check Castling (can't castle through/into check)
+		if (!hasMoved)
+		{
+			x = (int)location.getX();
+			y = (int)location.getY();
+			if (board.getPiece(new Point(x-4, y)) != null)
+				if (!board.getPiece(new Point(x-4, y)).hasItMoved() && !board.squareOccupiedPeriod(new Point(x-1, y)) && !invalidMoves.contains(new Point(x-1, y))
+																	&& !board.squareOccupiedPeriod(new Point(x-2, y)) && !invalidMoves.contains(new Point(x-2, y))
+																	&& !board.squareOccupiedPeriod(new Point(x-3, y)))
+					validMoves.add(new Point(x-2, y));
+					
+			if (board.getPiece(new Point(x+3, y)) != null)
+				if (!board.getPiece(new Point(x+3, y)).hasItMoved() && !board.squareOccupiedPeriod(new Point(x+1, y)) && !invalidMoves.contains(new Point(x+1, y))
+																	&& !board.squareOccupiedPeriod(new Point(x+2, y)) && !invalidMoves.contains(new Point(x+2, y)))
+					validMoves.add(new Point(x+2, y));
+		}
+	}
+	
+	public LinkedList<Point> getValidMoves(TestBoard board)
+	{
+		determineValidMoves(board);
+		return validMoves;
+	}
+	
+	
+	
+	//Check is the list of valid moves contains the desired move
 	public boolean validMove(Board board, Point p)
 	{
 		if (color.equals("white"))
@@ -233,6 +350,60 @@ public class King implements Piece
 		return validMoves;
 	}
 
+	
+	//Moves a piece. Assumes the move is valid.
+	//Castling is handled in Board class.
+	public void move(TestBoard board, Point p)
+	{
+		hasMoved = true;
+		location = p;
+	}
+
+	//Returns a list of squares that the piece can attack
+	public LinkedList<Point> attackSquares(TestBoard board)
+	{
+		validMoves.clear();
+		int x = (int)location.getX();
+		int y = (int)location.getY();
+		
+		//Check top three spaces
+		if (y+1<=7)
+		{
+			if (!board.squareOccupied(new Point(x, y+1), color))
+				validMoves.add(new Point(x, y+1));
+			
+			if (x-1>=0 && !board.squareOccupied(new Point(x-1, y+1), color))
+				validMoves.add(new Point(x-1, y+1));
+			
+			if (x+1<=7 && !board.squareOccupied(new Point(x+1, y+1), color))
+				validMoves.add(new Point(x+1, y+1));
+		}
+		
+		//Check bottom three spaces
+		if (y-1>=0)
+		{
+			if (!board.squareOccupied(new Point(x, y-1), color))
+				validMoves.add(new Point(x, y-1));
+			
+			if (x-1>=0 && !board.squareOccupied(new Point(x-1, y-1), color))
+				validMoves.add(new Point(x-1, y-1));
+			
+			if (x+1<=7 && !board.squareOccupied(new Point(x+1, y-1), color))
+				validMoves.add(new Point(x+1, y-1));
+		}
+			
+		//Check left and right spaces
+		if (x+1<=7)
+			if (!board.squareOccupied(new Point(x+1, y), color))
+				validMoves.add(new Point(x+1, y));
+			
+		if (x-1>=0)
+			if (!board.squareOccupied(new Point(x-1, y), color))
+				validMoves.add(new Point(x-1, y));
+			
+		return validMoves;
+	}
+	
 	//Returns a list of squares that the piece can attack
 	public LinkedList<Point> attackSquares(Piece[][] board)
 	{

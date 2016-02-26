@@ -18,10 +18,15 @@ public interface Piece
 	public int drawX();
 	public int drawY();
 	public boolean validMove(Board board, Point p);
+	public boolean validMove(TestBoard board, Point p);
 	public void determineValidMoves(Board board);
+	public void determineValidMoves(TestBoard board);
 	public LinkedList<Point> getValidMoves(Board board);
+	public LinkedList<Point> getValidMoves(TestBoard board);
 	public boolean hasItMoved();
 	public void move(Board board, Point p);
+	public void move(TestBoard board, Point p);
 	public LinkedList<Point> attackSquares(Board board);
+	public LinkedList<Point> attackSquares(TestBoard board);
 	public LinkedList<Point> attackSquares(Piece[][] board);
 }

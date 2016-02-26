@@ -149,6 +149,98 @@ public class Bishop implements Piece
 		return validMoves;
 	}
 	
+	
+	//Check is the list of valid moves contains the desired move and that the king is not in check
+	public boolean validMove(TestBoard board, Point p)
+	{
+		if (color.equals("white"))
+		{
+			if (!Check.checkWhite(board, location, p))
+			{	
+				if (validMoves.contains(p))
+					return true;
+				else 
+					return false;
+			}
+		}
+		else
+		{
+			if (!Check.checkBlack(board, location, p))
+			{	
+				if (validMoves.contains(p))
+					return true;
+				else 
+					return false;
+			}
+		}
+		
+		return false;
+	}
+	
+	public void determineValidMoves(TestBoard board)
+	{
+		validMoves.clear();
+		int x = (int)location.getX();
+		int y = (int)location.getY();
+		boolean done = true;
+		
+		while (x+1<=7 && y+1<=7 && !board.squareOccupied(new Point(x+1, y+1), color) && done)
+		{
+			validMoves.add(new Point(x+1, y+1));
+			x++;
+			y++;
+			//check if this square actually had a opposite piece. if it did, end.
+			if (board.squareOccupiedPeriod(new Point(x, y)))
+				done = false;
+		}
+		done = true;
+		x = (int)location.getX();
+		y = (int)location.getY();
+		
+		while(x-1>=0 && y+1<=7 && !board.squareOccupied(new Point(x-1, y+1), color) && done)
+		{
+			validMoves.add(new Point(x-1, y+1));
+			x--;
+			y++;
+			//check if this square actually had a opposite piece. if it did, end.
+			if (board.squareOccupiedPeriod(new Point(x, y)))
+				done = false;
+		}
+		done = true;
+		x = (int)location.getX();
+		y = (int)location.getY();
+		
+		while (x+1<=7 && y-1>=0 && !board.squareOccupied(new Point(x+1, y-1), color) && done)
+		{
+			validMoves.add(new Point(x+1, y-1));
+			x++;
+			y--;
+			//check if this square actually had a opposite piece. if it did, end.
+			if (board.squareOccupiedPeriod(new Point(x, y)))
+				done = false;
+		}
+		done = true;
+		x = (int)location.getX();
+		y = (int)location.getY();
+		
+		while (x-1>=0 && y-1>=0 && !board.squareOccupied(new Point(x-1, y-1), color) && done)
+		{
+			validMoves.add(new Point(x-1, y-1));
+			x--;
+			y--;
+			//check if this square actually had a opposite piece. if it did, end.
+			if (board.squareOccupiedPeriod(new Point(x, y)))
+				done = false;
+		}
+	}
+
+	public LinkedList<Point> getValidMoves(TestBoard board)
+	{
+		determineValidMoves(board);
+		return validMoves;
+	}
+	
+	
 	//Check if the piece has moved yet.
 	public boolean hasItMoved()
 	{
@@ -164,6 +256,20 @@ public class Bishop implements Piece
 
 	//Returns a list of squares that the piece can attack
 	public LinkedList<Point> attackSquares(Board board)
+	{
+		determineValidMoves(board);
+		return validMoves;
+	}
+	
+	//Moves a piece. Assumes the move is valid.
+	public void move(TestBoard board, Point p)
+	{
+		hasMoved = true;
+		location = p;
+	}
+
+	//Returns a list of squares that the piece can attack
+	public LinkedList<Point> attackSquares(TestBoard board)
 	{
 		determineValidMoves(board);
 		return validMoves;

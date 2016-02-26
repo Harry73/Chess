@@ -421,17 +421,19 @@ public class Board
 			//Redraw and check for checkmate.
 			repainting();
 			checkmate();
-	
+						
 			//Run computer's turn
 			if (!checkmate)
 			{	
 				if (mode.equals("white ai") && turn == 1)
 				{
-					AI.move("white", level, this);
+					Move selectedMove = AI.move("white", level, this);
+					move(selectedMove.from(), selectedMove.to());
 				}
 				else if (mode.equals("black ai") && turn == -1)
 				{
-					AI.move("black", level, this);
+					Move selectedMove = AI.move("black", level, this);		
+					move(selectedMove.from(), selectedMove.to());
 				}
 			}
 		}
