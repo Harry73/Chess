@@ -4,46 +4,53 @@
  * Author: Ian Patel
  */
 
-import java.awt.Point;
-
-public class Move
-{
-	private Point to;
-	private Point from;
+public class Move {
+	private Coord to;
+	private Coord from;
 	
-	//Create a Move from two points
-	public Move(Point from, Point to)
-	{
+	// Create a Move from two Coords
+	public Move(Coord from, Coord to) {
 		this.to = to;
 		this.from = from;
 	}
 	
-	//Set the "move to" point
-	public void to(Point to)
-	{
+	// Set the "move to" Coord
+	public void to(Coord to) {
 		this.to = to;
 	}
 	
-	//Get the "move to" point
-	public Point to()
-	{
+	// Get the "move to" Coord
+	public Coord to() {
 		return to;
 	}
 	
-	//Set the "move from" point
- 	public void from(Point from)
-	{
+	// Set the "move from" Coord
+ 	public void from(Coord from) {
 		this.from = from;
 	}
 	
-	//Get the "move from" point
-	public Point from()
-	{
+	// Get the "move from" Coord
+	public Coord from() {
 		return from;
 	}
+
+	// Compare the two coordinates for equality
+	public boolean equals(Object other) {
+		if (other instanceof Move) {
+			if (to.equals(((Move)other).to()) && from.equals(((Move)other).from())) 
+				return true;
+			else
+				return false;
+		}
+		else
+			return false;
+	}
 	
-	public String toString()
-	{
+	public int hashCode() {
+		return to.hashCode() + from.hashCode() * 1000;
+	}
+	
+	public String toString() {
 		return from + " -> " + to;
 	}
 }

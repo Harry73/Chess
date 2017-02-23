@@ -5,276 +5,141 @@
  */
 
 import java.util.*;
-import java.awt.Point;
 
-public class Knight implements Piece
-{
+public class Knight implements Piece {
 	private String id;
 	private String color;
-	private Point location;
-	private LinkedList<Point> validMoves;
+	private Coord location;
+	private LinkedList<Move> validMoves;
 	private boolean hasMoved;
 	
-	public Knight(String id, String color, Point location, boolean hasMoved)
-	{
+	public Knight(String id, String color, Coord location, boolean hasMoved) {
 		this.id = id;
 		this.color = color;
 		this.location = location;
 		this.hasMoved = hasMoved;
-		validMoves = new LinkedList<Point>();
+		validMoves = new LinkedList<Move>();
 	}
 	
-	public String getID()
-	{
+	public String getID() {
 		return id;
 	}
 	
-	public String getColor()
-	{	
+	public String getColor() {	
 		return color;
 	}
 	
-	public Point getLocation()
-	{
+	public Coord getLocation() {
 		return location;
 	}
 	
-	public void setLocation(Point p)
-	{
+	public void setLocation(Coord p) {
 		location = p;
 	}
 	
-	public void setHasMoved(boolean hasMoved)
-	{
+	public void setHasMoved(boolean hasMoved) {
 		this.hasMoved = hasMoved;
 	}
 	
-	//Calculates the point at which to draw the piece.
-	public int drawX()
-	{
-		return (int)location.getX() * 75;
+	// Calculates the Coord at which to draw the piece.
+	public int drawX() {
+		return location.X() * 75;
 	}
-	public int drawY()
-	{
-		return (7 - (int)location.getY()) * 75;
+	public int drawY() {
+		return (7 - location.Y()) * 75;
 	}
-	
-	//Check is the list of valid moves contains the desired move and that the king is not in check
-	public boolean validMove(TestBoard board, Point p)
-	{
-		if (color.equals("white"))
-		{
-			if (!Check.checkWhite(board, location, p))
-			{	
-				if (validMoves.contains(p))
-					return true;
-				else 
-					return false;
-			}
-		}
-		else
-		{
-			if (!Check.checkBlack(board, location, p))
-			{
-				if (validMoves.contains(p))
-					return true;
-				else 
-					return false;
-			}
-		}
 		
-		return false;
-	}
-	
-	//Creates a list of squares the piece can move to.
-	public void determineValidMoves(TestBoard board)
-	{
+	// Creates a list of squares the piece can move to.
+	public void determineValidMoves(Board board) {
 		validMoves.clear();
-		int x = (int)location.getX();
-		int y = (int)location.getY();
+		int x = location.X();
+		int y = location.Y();
 		if (x+1<=7 && y+2<=7)
-			if (!board.squareOccupied(new Point(x+1, y+2), color))
-				validMoves.add(new Point(x+1, y+2));
+			if (!board.squareOccupied(new Coord(x+1, y+2), color))
+				validMoves.add(new Move(location, new Coord(x+1, y+2)));
 			
 		if (x+2<=7 && y+1<=7)
-			if (!board.squareOccupied(new Point(x+2, y+1), color))
-				validMoves.add(new Point(x+2, y+1));
+			if (!board.squareOccupied(new Coord(x+2, y+1), color))
+				validMoves.add(new Move(location, new Coord(x+2, y+1)));
 		
 		if (x+2<=7 && y-1>=0)
-			if (!board.squareOccupied(new Point(x+2, y-1), color))
-				validMoves.add(new Point(x+2, y-1));
+			if (!board.squareOccupied(new Coord(x+2, y-1), color))
+				validMoves.add(new Move(location, new Coord(x+2, y-1)));
 		
 		if (x+1<=7 && y-2>=0)
-			if (!board.squareOccupied(new Point(x+1, y-2), color))
-				validMoves.add(new Point(x+1, y-2));
+			if (!board.squareOccupied(new Coord(x+1, y-2), color))
+				validMoves.add(new Move(location, new Coord(x+1, y-2)));
 		
 		if (x-1>=0 && y-2>=0)
-			if (!board.squareOccupied(new Point(x-1, y-2), color))
-				validMoves.add(new Point(x-1, y-2));
+			if (!board.squareOccupied(new Coord(x-1, y-2), color))
+				validMoves.add(new Move(location, new Coord(x-1, y-2)));
 			
 		if (x-2>=0 && y-1>=0)
-			if (!board.squareOccupied(new Point(x-2, y-1), color))
-				validMoves.add(new Point(x-2, y-1));
+			if (!board.squareOccupied(new Coord(x-2, y-1), color))
+				validMoves.add(new Move(location, new Coord(x-2, y-1)));
 			
 		if (x-2>=0 && y+1<=7)
-			if (!board.squareOccupied(new Point(x-2, y+1), color))
-				validMoves.add(new Point(x-2, y+1));
+			if (!board.squareOccupied(new Coord(x-2, y+1), color))
+				validMoves.add(new Move(location, new Coord(x-2, y+1)));
 			
 		if (x-1>=0 && y+2<=7)
-			if (!board.squareOccupied(new Point(x-1, y+2), color))
-				validMoves.add(new Point(x-1, y+2));
+			if (!board.squareOccupied(new Coord(x-1, y+2), color))
+				validMoves.add(new Move(location, new Coord(x-1, y+2)));
 	}
 	
-	public LinkedList<Point> getValidMoves(TestBoard board)
-	{
+	public LinkedList<Move> getValidMoves(Board board) {
 		determineValidMoves(board);
 		return validMoves;
 	}
 
-	//Check is the list of valid moves contains the desired move and that the king is not in check
-	public boolean validMove(Board board, Point p)
-	{
-		if (color.equals("white"))
-		{
-			if (!Check.checkWhite(board, location, p))
-			{	
-				if (validMoves.contains(p))
-					return true;
-				else 
-					return false;
-			}
-		}
-		else
-		{
-			if (!Check.checkBlack(board, location, p))
-			{
-				if (validMoves.contains(p))
-					return true;
-				else 
-					return false;
-			}
-		}
-		
-		return false;
-	}
-	
-	//Creates a list of squares the piece can move to.
-	public void determineValidMoves(Board board)
-	{
-		validMoves.clear();
-		int x = (int)location.getX();
-		int y = (int)location.getY();
-		if (x+1<=7 && y+2<=7)
-			if (!board.squareOccupied(new Point(x+1, y+2), color))
-				validMoves.add(new Point(x+1, y+2));
-			
-		if (x+2<=7 && y+1<=7)
-			if (!board.squareOccupied(new Point(x+2, y+1), color))
-				validMoves.add(new Point(x+2, y+1));
-		
-		if (x+2<=7 && y-1>=0)
-			if (!board.squareOccupied(new Point(x+2, y-1), color))
-				validMoves.add(new Point(x+2, y-1));
-		
-		if (x+1<=7 && y-2>=0)
-			if (!board.squareOccupied(new Point(x+1, y-2), color))
-				validMoves.add(new Point(x+1, y-2));
-		
-		if (x-1>=0 && y-2>=0)
-			if (!board.squareOccupied(new Point(x-1, y-2), color))
-				validMoves.add(new Point(x-1, y-2));
-			
-		if (x-2>=0 && y-1>=0)
-			if (!board.squareOccupied(new Point(x-2, y-1), color))
-				validMoves.add(new Point(x-2, y-1));
-			
-		if (x-2>=0 && y+1<=7)
-			if (!board.squareOccupied(new Point(x-2, y+1), color))
-				validMoves.add(new Point(x-2, y+1));
-			
-		if (x-1>=0 && y+2<=7)
-			if (!board.squareOccupied(new Point(x-1, y+2), color))
-				validMoves.add(new Point(x-1, y+2));
-	}
-	
-	public LinkedList<Point> getValidMoves(Board board)
-	{
-		determineValidMoves(board);
-		return validMoves;
-	}
-
-	//Check if the piece has moved yet.
-	public boolean hasItMoved()
-	{
+	// Check if the piece has moved yet.
+	public boolean hasItMoved() {
 		return hasMoved;
 	}
 	
-	//Moves a piece. Assumes the move is valid.
-	public void move(Board board, Point p)
-	{
+	// Moves a piece. Assumes the move is valid.
+	public void move(Board board, Coord p) {
 		hasMoved = true;
 		location = p;
 	}
 	
-	//Returns a list of squares that the piece can attack
-	public LinkedList<Point> attackSquares(Board board)
-	{
-		determineValidMoves(board);
-		return validMoves;
-	}
-	
-	//Moves a piece. Assumes the move is valid.
-	public void move(TestBoard board, Point p)
-	{
-		hasMoved = true;
-		location = p;
-	}
-	
-	//Returns a list of squares that the piece can attack
-	public LinkedList<Point> attackSquares(TestBoard board)
-	{
-		determineValidMoves(board);
-		return validMoves;
-	}
-	
-	//Returns a list of squares that the piece can attack
-	public LinkedList<Point> attackSquares(Piece[][] board)
-	{
-		validMoves.clear();
-		int x = (int)location.getX();
-		int y = (int)location.getY();
+	// Returns a list of squares that the piece can attack
+	public LinkedList<Coord> attackSquares(Board board) {
+		LinkedList<Coord> attacks = new LinkedList<Coord>();
+		int x = location.X();
+		int y = location.Y();
 		if (x+1<=7 && y+2<=7)
-			if ((board[x+1][y+2] == null) || (!board[x+1][y+2].getColor().equals(color)))
-				validMoves.add(new Point(x+1, y+2));
+			if (!board.squareOccupied(new Coord(x+1, y+2), color))
+				attacks.add(new Coord(x+1, y+2));
 			
 		if (x+2<=7 && y+1<=7)
-			if ((board[x+2][y+1] == null) || (!board[x+2][y+1].getColor().equals(color)))
-				validMoves.add(new Point(x+2, y+1));
+			if (!board.squareOccupied(new Coord(x+2, y+1), color))
+				attacks.add(new Coord(x+2, y+1));
 		
 		if (x+2<=7 && y-1>=0)
-			if ((board[x+2][y-1] == null) || (!board[x+2][y-1].getColor().equals(color)))
-				validMoves.add(new Point(x+2, y-1));
+			if (!board.squareOccupied(new Coord(x+2, y-1), color))
+				attacks.add(new Coord(x+2, y-1));
 		
 		if (x+1<=7 && y-2>=0)
-			if ((board[x+1][y-2] == null) || (!board[x+1][y-2].getColor().equals(color)))
-				validMoves.add(new Point(x+1, y-2));
+			if (!board.squareOccupied(new Coord(x+1, y-2), color))
+				attacks.add(new Coord(x+1, y-2));
 		
 		if (x-1>=0 && y-2>=0)
-			if ((board[x-1][y-2] == null) || (!board[x-1][y-2].getColor().equals(color)))
-				validMoves.add(new Point(x-1, y-2));
+			if (!board.squareOccupied(new Coord(x-1, y-2), color))
+				attacks.add(new Coord(x-1, y-2));
 			
 		if (x-2>=0 && y-1>=0)
-			if ((board[x-2][y-1] == null) || (!board[x-2][y-1].getColor().equals(color)))
-				validMoves.add(new Point(x-2, y-1));
+			if (!board.squareOccupied(new Coord(x-2, y-1), color))
+				attacks.add(new Coord(x-2, y-1));
 			
 		if (x-2>=0 && y+1<=7)
-			if ((board[x-2][y+1] == null) || (!board[x-2][y+1].getColor().equals(color)))
-				validMoves.add(new Point(x-2, y+1));
+			if (!board.squareOccupied(new Coord(x-2, y+1), color))
+				attacks.add(new Coord(x-2, y+1));
 			
 		if (x-1>=0 && y+2<=7)
-			if ((board[x-1][y+2] == null) || (!board[x-1][y+2].getColor().equals(color)))
-				validMoves.add(new Point(x-1, y+2));
-		
-		return validMoves;
+			if (!board.squareOccupied(new Coord(x-1, y+2), color))
+				attacks.add(new Coord(x-1, y+2));
+			
+		return attacks;
 	}
 }

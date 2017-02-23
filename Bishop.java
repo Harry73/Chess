@@ -5,333 +5,171 @@
  */
  
 import java.util.*;
-import java.awt.Point;
 
-public class Bishop implements Piece
-{
+public class Bishop implements Piece {
 	private String id;
 	private String color;
-	private Point location;
-	private LinkedList<Point> validMoves;
+	private Coord location;
+	private LinkedList<Move> validMoves;
 	private boolean hasMoved;
 	
-	public Bishop(String id, String color, Point location, boolean hasMoved)
-	{
+	public Bishop(String id, String color, Coord location, boolean hasMoved) {
 		this.id = id;
 		this.color = color;
 		this.location = location;
 		this.hasMoved = hasMoved;
-		validMoves = new LinkedList<Point>();
+		validMoves = new LinkedList<Move>();
 	}
 	
-	public String getID()
-	{
+	public String getID() {
 		return id;
 	}
 	
-	public String getColor()
-	{	
+	public String getColor() {	
 		return color;
 	}
 	
-	public Point getLocation()
-	{
+	public Coord getLocation() {
 		return location;
 	}
 	
-	public void setLocation(Point p)
-	{
+	public void setLocation(Coord p) {
 		location = p;
 	}
 	
-	public void setHasMoved(boolean hasMoved)
-	{
+	public void setHasMoved(boolean hasMoved) {
 		this.hasMoved = hasMoved;
 	}
 	
-	//Calculates the point at which to draw the piece.
-	public int drawX()
-	{
-		return (int)location.getX() * 75;
+	// Calculates the point at which to draw the piece.
+	public int drawX() {
+		return location.X() * 75;
 	}
-	public int drawY()
-	{
-		return (7 - (int)location.getY()) * 75;
+	public int drawY() {
+		return (7 - location.Y()) * 75;
 	}
 	
-	//Check is the list of valid moves contains the desired move and that the king is not in check
-	public boolean validMove(Board board, Point p)
-	{
-		if (color.equals("white"))
-		{
-			if (!Check.checkWhite(board, location, p))
-			{	
-				if (validMoves.contains(p))
-					return true;
-				else 
-					return false;
-			}
-		}
-		else
-		{
-			if (!Check.checkBlack(board, location, p))
-			{	
-				if (validMoves.contains(p))
-					return true;
-				else 
-					return false;
-			}
-		}
-		
-		return false;
-	}
-	
-	public void determineValidMoves(Board board)
-	{
+	public void determineValidMoves(Board board) {
 		validMoves.clear();
-		int x = (int)location.getX();
-		int y = (int)location.getY();
+		int x = location.X();
+		int y = location.Y();
 		boolean done = true;
 		
-		while (x+1<=7 && y+1<=7 && !board.squareOccupied(new Point(x+1, y+1), color) && done)
-		{
-			validMoves.add(new Point(x+1, y+1));
+		while (x+1<=7 && y+1<=7 && !board.squareOccupied(new Coord(x+1, y+1), color) && done) {
+			validMoves.add(new Move(location, new Coord(x+1, y+1)));
 			x++;
 			y++;
-			//check if this square actually had a opposite piece. if it did, end.
-			if (board.squareOccupiedPeriod(new Point(x, y)))
+			// check if this square actually had a opposite piece. if it did, end.
+			if (board.squareOccupiedPeriod(new Coord(x, y)))
 				done = false;
 		}
 		done = true;
-		x = (int)location.getX();
-		y = (int)location.getY();
+		x = location.X();
+		y = location.Y();
 		
-		while(x-1>=0 && y+1<=7 && !board.squareOccupied(new Point(x-1, y+1), color) && done)
-		{
-			validMoves.add(new Point(x-1, y+1));
+		while(x-1>=0 && y+1<=7 && !board.squareOccupied(new Coord(x-1, y+1), color) && done) {
+			validMoves.add(new Move(location, new Coord(x-1, y+1)));
 			x--;
 			y++;
-			//check if this square actually had a opposite piece. if it did, end.
-			if (board.squareOccupiedPeriod(new Point(x, y)))
+			// check if this square actually had a opposite piece. if it did, end.
+			if (board.squareOccupiedPeriod(new Coord(x, y)))
 				done = false;
 		}
 		done = true;
-		x = (int)location.getX();
-		y = (int)location.getY();
+		x = location.X();
+		y = location.Y();
 		
-		while (x+1<=7 && y-1>=0 && !board.squareOccupied(new Point(x+1, y-1), color) && done)
-		{
-			validMoves.add(new Point(x+1, y-1));
+		while (x+1<=7 && y-1>=0 && !board.squareOccupied(new Coord(x+1, y-1), color) && done) {
+			validMoves.add(new Move(location, new Coord(x+1, y-1)));
 			x++;
 			y--;
-			//check if this square actually had a opposite piece. if it did, end.
-			if (board.squareOccupiedPeriod(new Point(x, y)))
+			// check if this square actually had a opposite piece. if it did, end.
+			if (board.squareOccupiedPeriod(new Coord(x, y)))
 				done = false;
 		}
 		done = true;
-		x = (int)location.getX();
-		y = (int)location.getY();
+		x = location.X();
+		y = location.Y();
 		
-		while (x-1>=0 && y-1>=0 && !board.squareOccupied(new Point(x-1, y-1), color) && done)
-		{
-			validMoves.add(new Point(x-1, y-1));
+		while (x-1>=0 && y-1>=0 && !board.squareOccupied(new Coord(x-1, y-1), color) && done) {
+			validMoves.add(new Move(location, new Coord(x-1, y-1)));
 			x--;
 			y--;
-			//check if this square actually had a opposite piece. if it did, end.
-			if (board.squareOccupiedPeriod(new Point(x, y)))
+			// check if this square actually had a opposite piece. if it did, end.
+			if (board.squareOccupiedPeriod(new Coord(x, y)))
 				done = false;
 		}
 	}
 
-	public LinkedList<Point> getValidMoves(Board board)
-	{
+	public LinkedList<Move> getValidMoves(Board board) {
 		determineValidMoves(board);
 		return validMoves;
 	}
 	
-	
-	//Check is the list of valid moves contains the desired move and that the king is not in check
-	public boolean validMove(TestBoard board, Point p)
-	{
-		if (color.equals("white"))
-		{
-			if (!Check.checkWhite(board, location, p))
-			{	
-				if (validMoves.contains(p))
-					return true;
-				else 
-					return false;
-			}
-		}
-		else
-		{
-			if (!Check.checkBlack(board, location, p))
-			{	
-				if (validMoves.contains(p))
-					return true;
-				else 
-					return false;
-			}
-		}
-		
-		return false;
-	}
-	
-	public void determineValidMoves(TestBoard board)
-	{
-		validMoves.clear();
-		int x = (int)location.getX();
-		int y = (int)location.getY();
-		boolean done = true;
-		
-		while (x+1<=7 && y+1<=7 && !board.squareOccupied(new Point(x+1, y+1), color) && done)
-		{
-			validMoves.add(new Point(x+1, y+1));
-			x++;
-			y++;
-			//check if this square actually had a opposite piece. if it did, end.
-			if (board.squareOccupiedPeriod(new Point(x, y)))
-				done = false;
-		}
-		done = true;
-		x = (int)location.getX();
-		y = (int)location.getY();
-		
-		while(x-1>=0 && y+1<=7 && !board.squareOccupied(new Point(x-1, y+1), color) && done)
-		{
-			validMoves.add(new Point(x-1, y+1));
-			x--;
-			y++;
-			//check if this square actually had a opposite piece. if it did, end.
-			if (board.squareOccupiedPeriod(new Point(x, y)))
-				done = false;
-		}
-		done = true;
-		x = (int)location.getX();
-		y = (int)location.getY();
-		
-		while (x+1<=7 && y-1>=0 && !board.squareOccupied(new Point(x+1, y-1), color) && done)
-		{
-			validMoves.add(new Point(x+1, y-1));
-			x++;
-			y--;
-			//check if this square actually had a opposite piece. if it did, end.
-			if (board.squareOccupiedPeriod(new Point(x, y)))
-				done = false;
-		}
-		done = true;
-		x = (int)location.getX();
-		y = (int)location.getY();
-		
-		while (x-1>=0 && y-1>=0 && !board.squareOccupied(new Point(x-1, y-1), color) && done)
-		{
-			validMoves.add(new Point(x-1, y-1));
-			x--;
-			y--;
-			//check if this square actually had a opposite piece. if it did, end.
-			if (board.squareOccupiedPeriod(new Point(x, y)))
-				done = false;
-		}
-	}
-
-	public LinkedList<Point> getValidMoves(TestBoard board)
-	{
-		determineValidMoves(board);
-		return validMoves;
-	}
-	
-	
-	//Check if the piece has moved yet.
-	public boolean hasItMoved()
-	{
+	// Check if the piece has moved yet.
+	public boolean hasItMoved() {
 		return hasMoved;
 	}
 	
-	//Moves a piece. Assumes the move is valid.
-	public void move(Board board, Point p)
-	{
+	// Moves a piece. Assumes the move is valid.
+	public void move(Board board, Coord p) {
 		hasMoved = true;
 		location = p;
 	}
 
-	//Returns a list of squares that the piece can attack
-	public LinkedList<Point> attackSquares(Board board)
-	{
-		determineValidMoves(board);
-		return validMoves;
-	}
-	
-	//Moves a piece. Assumes the move is valid.
-	public void move(TestBoard board, Point p)
-	{
-		hasMoved = true;
-		location = p;
-	}
-
-	//Returns a list of squares that the piece can attack
-	public LinkedList<Point> attackSquares(TestBoard board)
-	{
-		determineValidMoves(board);
-		return validMoves;
-	}
-	
-	//Returns a list of squares that the piece can attack
-	public LinkedList<Point> attackSquares(Piece[][] board)
-	{
-		validMoves.clear();
-		int x = (int)location.getX();
-		int y = (int)location.getY();
+	// Returns a list of squares that the piece can attack
+	public LinkedList<Coord> attackSquares(Board board) {
+		LinkedList<Coord> attacks = new LinkedList<Coord>();
+		
+		int x = location.X();
+		int y = location.Y();
 		boolean done = true;
 		
-		while (x+1<=7 && y+1<=7 && ((board[x+1][y+1] == null) || (!board[x+1][y+1].getColor().equals(color))) && done)
-		{
-			validMoves.add(new Point(x+1, y+1));
+		while (x+1<=7 && y+1<=7 && !board.squareOccupied(new Coord(x+1, y+1), color) && done) {
+			attacks.add(new Coord(x+1, y+1));
 			x++;
 			y++;
-			//check if this square actually had a opposite piece. if it did, end.
-			if (board[x][y] != null)
+			// check if this square actually had a opposite piece. if it did, end.
+			if (board.squareOccupiedPeriod(new Coord(x, y)))
 				done = false;
 		}
 		done = true;
-		x = (int)location.getX();
-		y = (int)location.getY();
+		x = location.X();
+		y = location.Y();
 		
-		while(x-1>=0 && y+1<=7 && ((board[x-1][y+1] == null) || (!board[x-1][y+1].getColor().equals(color))) && done)
-		{
-			validMoves.add(new Point(x-1, y+1));
+		while(x-1>=0 && y+1<=7 && !board.squareOccupied(new Coord(x-1, y+1), color) && done) {
+			attacks.add(new Coord(x-1, y+1));
 			x--;
 			y++;
-			//check if this square actually had a opposite piece. if it did, end.
-			if (board[x][y] != null)
+			// check if this square actually had a opposite piece. if it did, end.
+			if (board.squareOccupiedPeriod(new Coord(x, y)))
 				done = false;
 		}
 		done = true;
-		x = (int)location.getX();
-		y = (int)location.getY();
+		x = location.X();
+		y = location.Y();
 		
-		while (x+1<=7 && y-1>=0 && ((board[x+1][y-1] == null) || (!board[x+1][y-1].getColor().equals(color))) && done)
-		{
-			validMoves.add(new Point(x+1, y-1));
+		while (x+1<=7 && y-1>=0 && !board.squareOccupied(new Coord(x+1, y-1), color) && done) {
+			attacks.add(new Coord(x+1, y-1));
 			x++;
 			y--;
-			//check if this square actually had a opposite piece. if it did, end.
-			if (board[x][y] != null)
+			// check if this square actually had a opposite piece. if it did, end.
+			if (board.squareOccupiedPeriod(new Coord(x, y)))
 				done = false;
 		}
 		done = true;
-		x = (int)location.getX();
-		y = (int)location.getY();
+		x = location.X();
+		y = location.Y();
 		
-		while (x-1>=0 && y-1>=0 && ((board[x-1][y-1] == null) || (!board[x-1][y-1].getColor().equals(color))) && done)
-		{
-			validMoves.add(new Point(x-1, y-1));
+		while (x-1>=0 && y-1>=0 && !board.squareOccupied(new Coord(x-1, y-1), color) && done) {
+			attacks.add(new Coord(x-1, y-1));
 			x--;
 			y--;
-			//check if this square actually had a opposite piece. if it did, end.
-			if (board[x][y] != null)
+			// check if this square actually had a opposite piece. if it did, end.
+			if (board.squareOccupiedPeriod(new Coord(x, y)))
 				done = false;
 		}
-		
-		return validMoves;
+
+		return attacks;
 	}
 }

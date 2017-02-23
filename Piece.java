@@ -5,28 +5,19 @@
  */
 
 import java.util.*;
-import java.awt.Point;
 
 //Interface describing a chess piece
-public interface Piece
-{
+public interface Piece {
 	public String getID();
 	public String getColor();
-	public Point getLocation();
-	public void setLocation(Point p);
+	public Coord getLocation();
+	public void setLocation(Coord p);
 	public void setHasMoved(boolean hasMoved);
 	public int drawX();
 	public int drawY();
-	public boolean validMove(Board board, Point p);
-	public boolean validMove(TestBoard board, Point p);
 	public void determineValidMoves(Board board);
-	public void determineValidMoves(TestBoard board);
-	public LinkedList<Point> getValidMoves(Board board);
-	public LinkedList<Point> getValidMoves(TestBoard board);
+	public LinkedList<Move> getValidMoves(Board board);
 	public boolean hasItMoved();
-	public void move(Board board, Point p);
-	public void move(TestBoard board, Point p);
-	public LinkedList<Point> attackSquares(Board board);
-	public LinkedList<Point> attackSquares(TestBoard board);
-	public LinkedList<Point> attackSquares(Piece[][] board);
+	public void move(Board board, Coord p);
+	public LinkedList<Coord> attackSquares(Board board);
 }
