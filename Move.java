@@ -7,11 +7,22 @@
 public class Move {
 	private Coord to;
 	private Coord from;
+	private boolean promotion;
+	private String promoteTo;
 	
 	// Create a Move from two Coords
 	public Move(Coord from, Coord to) {
 		this.to = to;
 		this.from = from;
+		this.promotion = false;
+		this.promoteTo = "";
+	}
+	
+	public Move(Coord from, Coord to, boolean promotion, String promoteTo) {
+		this.to = to;
+		this.from = from;
+		this.promotion = promotion;
+		this.promoteTo = promoteTo;
 	}
 	
 	// Set the "move to" Coord
@@ -34,10 +45,18 @@ public class Move {
 		return from;
 	}
 
+	public boolean promotion() {
+		return promotion;
+	}
+	
+	public String promoteTo() {
+		return promoteTo;
+	}
+	
 	// Compare the two coordinates for equality
 	public boolean equals(Object other) {
 		if (other instanceof Move) {
-			if (to.equals(((Move)other).to()) && from.equals(((Move)other).from())) 
+			if (to.equals(((Move)other).to()) && from.equals(((Move)other).from()) && promotion == ((Move)other).promotion()) 
 				return true;
 			else
 				return false;
@@ -51,6 +70,10 @@ public class Move {
 	}
 	
 	public String toString() {
-		return from + " -> " + to;
+		String output = from + " -> " + to;
+		if (promotion) {
+			output += " (promote to " + promoteTo + ")";
+		}
+		return output;
 	}
 }

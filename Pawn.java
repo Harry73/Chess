@@ -59,17 +59,46 @@ public class Pawn implements Piece {
 			// Add special case if the pawn hasn't moved.
 			if (!hasMoved && !board.squareOccupiedPeriod(new Coord(x, y+1)) && !board.squareOccupiedPeriod(new Coord(x, y+2)))
 				validMoves.add(new Move(location, new Coord(x, y+2)));
-
+			
 			// Move forward
-			if (y+1<=7 && !board.squareOccupiedPeriod(new Coord(x, y+1)))
-				validMoves.add(new Move(location, new Coord(x, y+1)));
+			if (y+1<=7 && !board.squareOccupiedPeriod(new Coord(x, y+1))) {
+				if (y == 6) {
+					validMoves.add(new Move(location, new Coord(x, y+1), true, "Queen"));
+					validMoves.add(new Move(location, new Coord(x, y+1), true, "Rook"));
+					validMoves.add(new Move(location, new Coord(x, y+1), true, "Knight"));
+					validMoves.add(new Move(location, new Coord(x, y+1), true, "Bishop"));
+				}
+				else {
+					validMoves.add(new Move(location, new Coord(x, y+1)));
+				}
+			}
 
 			// Diagonal captures
-			if (x+1<=7 && y+1<=7 && !board.squareOccupied(new Coord(x+1, y+1), "white") && board.squareOccupiedPeriod(new Coord(x+1, y+1)))
-				validMoves.add(new Move(location, new Coord(x+1, y+1)));
+			if (x+1<=7 && y+1<=7 && !board.squareOccupied(new Coord(x+1, y+1), "white") && board.squareOccupiedPeriod(new Coord(x+1, y+1))) {
+				
+				if (y == 6) {
+					validMoves.add(new Move(location, new Coord(x+1, y+1), true, "Queen"));
+					validMoves.add(new Move(location, new Coord(x+1, y+1), true, "Rook"));
+					validMoves.add(new Move(location, new Coord(x+1, y+1), true, "Knight"));
+					validMoves.add(new Move(location, new Coord(x+1, y+1), true, "Bishop"));
+				}
+				else {
+					validMoves.add(new Move(location, new Coord(x+1, y+1)));
+				}
+			}
 
-			if (x-1>=0 && y+1<=7 && !board.squareOccupied(new Coord(x-1, y+1), "white") && board.squareOccupiedPeriod(new Coord(x-1, y+1)))
-				validMoves.add(new Move(location, new Coord(x-1, y+1)));
+			if (x-1>=0 && y+1<=7 && !board.squareOccupied(new Coord(x-1, y+1), "white") && board.squareOccupiedPeriod(new Coord(x-1, y+1))) {
+				
+				if (y == 6) {
+					validMoves.add(new Move(location, new Coord(x-1, y+1), true, "Queen"));
+					validMoves.add(new Move(location, new Coord(x-1, y+1), true, "Rook"));
+					validMoves.add(new Move(location, new Coord(x-1, y+1), true, "Knight"));
+					validMoves.add(new Move(location, new Coord(x-1, y+1), true, "Bishop"));
+				}
+				else {
+					validMoves.add(new Move(location, new Coord(x-1, y+1)));
+				}
+			}
 		}
 		else {
 			// Add special case if the pawn hasn't moved.
@@ -77,15 +106,42 @@ public class Pawn implements Piece {
 				validMoves.add(new Move(location, new Coord(x, y-2)));
 			
 			// Move forward
-			if (y-1<=7 && !board.squareOccupiedPeriod(new Coord(x, y-1)))
-				validMoves.add(new Move(location, new Coord(x, y-1)));
+			if (y-1<=7 && !board.squareOccupiedPeriod(new Coord(x, y-1))) {
+				if (y == 1) {
+					validMoves.add(new Move(location, new Coord(x, y-1), true, "Queen"));
+					validMoves.add(new Move(location, new Coord(x, y-1), true, "Rook"));
+					validMoves.add(new Move(location, new Coord(x, y-1), true, "Knight"));
+					validMoves.add(new Move(location, new Coord(x, y-1), true, "Bishop"));
+				}
+				else {
+					validMoves.add(new Move(location, new Coord(x, y-1)));
+				}
+			}
 			
 			// Diagonal captures
-			if (x+1<=7 && y-1<=7 && !board.squareOccupied(new Coord(x+1, y-1), "black") && board.squareOccupiedPeriod(new Coord(x+1, y-1)))
-				validMoves.add(new Move(location, new Coord(x+1, y-1)));
+			if (x+1<=7 && y-1<=7 && !board.squareOccupied(new Coord(x+1, y-1), "black") && board.squareOccupiedPeriod(new Coord(x+1, y-1))) {
+				if (y == 1) {
+					validMoves.add(new Move(location, new Coord(x+1, y-1), true, "Queen"));
+					validMoves.add(new Move(location, new Coord(x+1, y-1), true, "Rook"));
+					validMoves.add(new Move(location, new Coord(x+1, y-1), true, "Knight"));
+					validMoves.add(new Move(location, new Coord(x+1, y-1), true, "Bishop"));
+				}
+				else {
+					validMoves.add(new Move(location, new Coord(x+1, y-1)));
+				}
+			}
 			
-			if (x-1>=0 && y-1<=7 && !board.squareOccupied(new Coord(x-1, y-1), "black") && board.squareOccupiedPeriod(new Coord(x-1, y-1)))
-				validMoves.add(new Move(location, new Coord(x-1, y-1)));
+			if (x-1>=0 && y-1<=7 && !board.squareOccupied(new Coord(x-1, y-1), "black") && board.squareOccupiedPeriod(new Coord(x-1, y-1))) {
+				if (y == 1) {
+					validMoves.add(new Move(location, new Coord(x-1, y-1), true, "Queen"));
+					validMoves.add(new Move(location, new Coord(x-1, y-1), true, "Rook"));
+					validMoves.add(new Move(location, new Coord(x-1, y-1), true, "Knight"));
+					validMoves.add(new Move(location, new Coord(x-1, y-1), true, "Bishop"));
+				}
+				else {
+					validMoves.add(new Move(location, new Coord(x-1, y-1)));
+				}
+			}
 		}
 	}
 	

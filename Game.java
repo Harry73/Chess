@@ -73,13 +73,18 @@ public class Game
 					}
 					else {
 						second = new Coord(x, y);
+						Move nextMove;
+						if (board.getPiece(first).getID().equals("pawn") && (second.Y() == 0 || second.Y() == 7))
+							nextMove = new Move(first, second, true, "");
+						else
+							nextMove = new Move(first, second);
 
 						// Validate move and perform if the selected move is valid
 						if (whitePlayer.isMyTurn()) {
 							LinkedList<Move> validMoves = board.getValidMoves("white");
 
-							if (validMoves != null && validMoves.contains(new Move(first, second))) {
-								board.move(first, second);
+							if (validMoves != null && validMoves.contains(nextMove)) {
+								board.move(nextMove);
 								blackPlayer.isMyTurn(true);
 								whitePlayer.isMyTurn(false);
 							}
@@ -87,8 +92,8 @@ public class Game
 						else if (blackPlayer.isMyTurn()) {
 							LinkedList<Move> validMoves = board.getValidMoves("black");
 
-							if (validMoves != null && validMoves.contains(new Move(first, second))) {
-								board.move(first, second);
+							if (validMoves != null && validMoves.contains(nextMove)) {
+								board.move(nextMove);
 								whitePlayer.isMyTurn(true);
 								blackPlayer.isMyTurn(false);
 							}
